@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CaseFlow · Turn Messy Disputes Into Clear Outcomes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#0D1B3E;
+  --navy-deep:#070f24;
+  --navy-mid:#162857;
+  --navy-light:#1e3a78;
+  --blue:#1A4FBF;
+  --blue-bright:#2563EB;
+  --light-blue:#DBEAFE;
+  --sky:#EFF6FF;
+  --sky-mid:#BFDBFE;
+  --white:#FFFFFF;
+  --gray-50:#F8FAFC;
+  --gray-100:#F1F5F9;
+  --gray-200:#E2E8F0;
+  --gray-300:#CBD5E1;
+  --gray-500:#64748B;
+  --gray-700:#334155;
+  --green:#059669;
+  --green-light:#D1FAE5;
+  --amber:#D97706;
+  --amber-light:#FEF3C7;
+  --red:#DC2626;
+  --text-dark:#0D1B3E;
+  --text-mid:#162857;
+  --text-body:#334155;
+  --text-muted:#64748B;
+  --shadow-sm:0 1px 8px rgba(13,27,62,.07);
+  --shadow-md:0 4px 24px rgba(13,27,62,.11);
+  --shadow-lg:0 12px 48px rgba(13,27,62,.16);
+  --radius:14px;
+  --radius-sm:8px;
+  --radius-lg:22px;
+  --font-head:'Playfair Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --sidebar-w:252px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);background:var(--sky);color:var(--text-dark);overflow-x:hidden;line-height:1.65}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--sky)}
+::-webkit-scrollbar-thumb{background:var(--navy);border-radius:4px}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.2}
+h1{font-size:clamp(2.2rem,3.2vw,3.6rem);font-weight:800}
+h2{font-size:clamp(1.6rem,2.2vw,2.4rem);font-weight:700}
+h3{font-size:clamp(1.1rem,1.6vw,1.5rem);font-weight:600}
+h4{font-size:1rem;font-weight:600}
+p{color:var(--text-body);line-height:1.75}
+a{text-decoration:none;color:inherit}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--navy);display:flex;flex-direction:column;
+  z-index:500;border-right:1px solid rgba(255,255,255,.06);overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15)}
+
+.sidebar-brand{padding:28px 22px 22px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.brand-icon-wrap{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--blue-bright) 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 24px rgba(37,99,235,.45);flex-shrink:0;
+}
+.brand-icon-wrap svg{width:26px;height:26px}
+.brand-name{font-family:var(--font-head);font-size:1.3rem;font-weight:700;color:var(--white);letter-spacing:.5px}
+.brand-name span{color:#60A5FA}
+.brand-tagline{font-family:var(--font-mono);font-size:.5rem;color:rgba(255,255,255,.38);letter-spacing:.12em;text-transform:uppercase}
+
+.sidebar-badge{
+  display:flex;align-items:center;gap:8px;padding:9px 22px;
+  background:rgba(5,150,105,.1);border-bottom:1px solid rgba(255,255,255,.05);
+  font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.5);letter-spacing:.08em;flex-shrink:0;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 2.5s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 6px #34D399}50%{opacity:.3;box-shadow:none}}
+
+.sidebar-nav{flex:1;padding:14px 12px}
+.nav-label{font-family:var(--font-mono);font-size:.5rem;letter-spacing:.18em;color:rgba(255,255,255,.22);text-transform:uppercase;padding:14px 10px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:11px;width:100%;padding:10px 13px;border-radius:10px;
+  background:none;border:none;color:rgba(255,255,255,.5);
+  font-family:var(--font-body);font-size:.9rem;font-weight:500;cursor:pointer;text-align:left;
+  transition:all .2s;margin-bottom:3px;
+}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.65;transition:opacity .2s}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+.nav-item:hover svg{opacity:1}
+.nav-item.active{background:linear-gradient(135deg,var(--blue),var(--blue-bright));color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.4)}
+.nav-item.active svg{opacity:1}
+
+.sidebar-footer{padding:18px 16px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sidebar-cta{
+  width:100%;padding:11px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-bright));
+  border:none;color:#fff;font-family:var(--font-body);font-size:.85rem;font-weight:600;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 14px rgba(37,99,235,.4);
+}
+.sidebar-cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.55)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:400;background:rgba(239,246,255,.92);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--gray-200);
+  padding:0 36px;height:60px;display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-title{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);letter-spacing:.2px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.topbar-chip{
+  padding:5px 13px;border-radius:20px;
+  background:var(--light-blue);color:var(--navy);
+  font-family:var(--font-mono);font-size:.65rem;font-weight:500;letter-spacing:.08em;
+}
+.topbar-btn{
+  padding:7px 18px;border-radius:8px;background:var(--navy);color:#fff;
+  font-family:var(--font-body);font-size:.82rem;font-weight:600;border:none;cursor:pointer;
+  transition:background .15s;
+}
+.topbar-btn:hover{background:var(--blue)}
+
+/* ── PAGES ── */
+.page{display:none;flex:1;animation:fadeIn .35s ease}
+.page.active{display:flex;flex-direction:column}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO (HOME) ── */
+.hero{
+  background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 55%,var(--navy-light) 100%);
+  color:#fff;padding:80px 56px 70px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 80% 50%,rgba(37,99,235,.18) 0%,transparent 70%);
+}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  padding:6px 14px;border-radius:20px;margin-bottom:22px;
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.7);
+}
+.hero h1{color:#fff;margin-bottom:20px}
+.hero h1 em{color:#93C5FD;font-style:normal}
+.hero-sub{color:rgba(255,255,255,.65);font-size:1.05rem;margin-bottom:34px;line-height:1.75}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{
+  padding:13px 28px;border-radius:10px;background:var(--blue-bright);color:#fff;
+  font-family:var(--font-body);font-size:.95rem;font-weight:600;border:none;cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 18px rgba(37,99,235,.45);
+}
+.btn-primary:hover{background:#1D4ED8;transform:translateY(-1px)}
+.btn-outline{
+  padding:13px 28px;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;
+  font-family:var(--font-body);font-size:.95rem;font-weight:500;
+  border:1px solid rgba(255,255,255,.25);cursor:pointer;transition:all .2s;
+}
+.btn-outline:hover{background:rgba(255,255,255,.14)}
+
+.hero-visual{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--radius-lg);padding:28px;backdrop-filter:blur(8px);
+}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hstat{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:20px;text-align:center;
+}
+.hstat-val{font-family:var(--font-head);font-size:1.9rem;font-weight:800;color:#fff;display:block}
+.hstat-label{font-size:.75rem;color:rgba(255,255,255,.5);margin-top:4px}
+.hstat-delta{font-size:.68rem;color:#34D399;font-weight:600;margin-top:6px;display:block;font-family:var(--font-mono)}
+
+/* ── SECTION WRAPPER ── */
+.section{padding:60px 56px;flex:1}
+.section-header{margin-bottom:48px}
+.section-eyebrow{
+  display:inline-block;padding:5px 14px;border-radius:20px;
+  background:var(--light-blue);color:var(--navy);
+  font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:500;margin-bottom:14px;
+}
+.section-header h2{color:var(--navy);margin-bottom:12px}
+.section-header p{color:var(--text-muted);max-width:580px;font-size:1.02rem}
+
+/* ── CARDS ── */
+.cards-grid{display:grid;gap:22px}
+.cards-3{grid-template-columns:repeat(3,1fr)}
+.cards-2{grid-template-columns:repeat(2,1fr)}
+.cards-4{grid-template-columns:repeat(4,1fr)}
+
+.card{
+  background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);
+  padding:28px;box-shadow:var(--shadow-sm);transition:box-shadow .2s,transform .2s;
+}
+.card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.card-icon{
+  width:46px;height:46px;border-radius:12px;
+  background:var(--light-blue);display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+}
+.card-icon svg{width:24px;height:24px;color:var(--navy)}
+.card h4{color:var(--navy);margin-bottom:8px;font-size:1rem}
+.card p{font-size:.9rem;color:var(--text-muted);line-height:1.65}
+
+/* ── FEATURE ROWS ── */
+.feature-row{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-bottom:70px}
+.feature-row.reverse{direction:rtl}
+.feature-row.reverse>*{direction:ltr}
+.feature-text h3{color:var(--navy);margin-bottom:14px}
+.feature-text p{color:var(--text-body);margin-bottom:20px;line-height:1.8}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.feature-list li{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--text-body)}
+.feature-list li::before{content:'';width:18px;height:18px;border-radius:50%;background:var(--green-light);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");background-size:12px;background-position:center;background-repeat:no-repeat;}
+.feature-visual{
+  background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);
+  padding:32px;box-shadow:var(--shadow-md);
+}
+
+/* ── WORKFLOW STEPS ── */
+.workflow{display:flex;gap:0;margin-top:40px;position:relative}
+.workflow::before{content:'';position:absolute;top:28px;left:28px;right:28px;height:2px;background:linear-gradient(90deg,var(--blue),var(--sky-mid));z-index:0}
+.wstep{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1}
+.wstep-num{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:1.1rem;font-weight:700;
+  margin-bottom:16px;border:4px solid var(--sky);box-shadow:var(--shadow-md);
+}
+.wstep h4{color:var(--navy);margin-bottom:6px;font-size:.9rem}
+.wstep p{font-size:.8rem;color:var(--text-muted);padding:0 8px}
+
+/* ── METRICS ── */
+.metrics-bar{
+  background:var(--navy);border-radius:var(--radius-lg);padding:42px 48px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+}
+.metric{border-right:1px solid rgba(255,255,255,.1);padding-right:24px}
+.metric:last-child{border-right:none}
+.metric-val{font-family:var(--font-head);font-size:2.4rem;font-weight:800;color:#fff;display:block;line-height:1}
+.metric-label{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:8px;display:block}
+.metric-delta{font-family:var(--font-mono);font-size:.7rem;color:#34D399;margin-top:6px;display:block}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.price-card{
+  background:var(--white);border:2px solid var(--gray-200);border-radius:var(--radius-lg);
+  padding:34px 28px;position:relative;transition:all .2s;
+}
+.price-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.price-card.featured{border-color:var(--blue-bright);box-shadow:0 0 0 4px rgba(37,99,235,.1)}
+.price-badge{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:var(--blue-bright);color:#fff;font-family:var(--font-mono);
+  font-size:.6rem;letter-spacing:.1em;padding:5px 14px;border-radius:20px;white-space:nowrap;
+}
+.price-name{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.price-desc{font-size:.85rem;color:var(--text-muted);margin-bottom:22px}
+.price-amount{display:flex;align-items:flex-end;gap:4px;margin-bottom:4px}
+.price-currency{font-size:1.1rem;font-weight:700;color:var(--navy);padding-bottom:6px}
+.price-val{font-family:var(--font-head);font-size:3rem;font-weight:800;color:var(--navy);line-height:1}
+.price-period{font-size:.85rem;color:var(--text-muted);padding-bottom:8px}
+.price-features{list-style:none;margin:20px 0 28px;display:flex;flex-direction:column;gap:9px}
+.price-features li{display:flex;align-items:flex-start;gap:9px;font-size:.88rem;color:var(--text-body)}
+.price-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.price-btn{
+  width:100%;padding:12px;border-radius:10px;font-family:var(--font-body);font-size:.92rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;
+}
+.price-btn.primary{background:var(--blue-bright);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.price-btn.primary:hover{background:#1D4ED8}
+.price-btn.secondary{background:var(--gray-100);color:var(--navy)}
+.price-btn.secondary:hover{background:var(--gray-200)}
+
+/* ── TABLE ── */
+.comp-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.comp-table th{background:var(--navy);color:#fff;padding:13px 18px;text-align:left;font-family:var(--font-body);font-weight:600}
+.comp-table th:first-child{border-radius:10px 0 0 0}
+.comp-table th:last-child{border-radius:0 10px 0 0}
+.comp-table td{padding:12px 18px;border-bottom:1px solid var(--gray-100)}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr:nth-child(even) td{background:var(--gray-50)}
+.check{color:var(--green);font-weight:700}
+.cross{color:#CBD5E1}
+.partial{color:var(--amber)}
+
+/* ── CHARTS ── */
+.chart-wrap{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)}
+.chart-title{font-family:var(--font-head);font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.chart-sub{font-size:.8rem;color:var(--text-muted);margin-bottom:20px}
+.chart-canvas-wrap{height:220px;position:relative}
+
+/* ── RISK TABLE ── */
+.risk-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-bottom:1px solid var(--gray-100);padding:16px 0}
+.risk-row:last-child{border-bottom:none}
+.risk-cat{font-weight:600;color:var(--navy);font-size:.9rem}
+.risk-impact{display:flex;align-items:center;gap:6px}
+.risk-pill{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600;font-family:var(--font-mono)}
+.risk-low{background:var(--green-light);color:#065F46}
+.risk-med{background:var(--amber-light);color:#92400E}
+.risk-high{background:#FEE2E2;color:#991B1B}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:grid;grid-template-columns:140px 1px 1fr;gap:0 28px;padding-bottom:32px}
+.tl-item:last-child{padding-bottom:0}
+.tl-date{text-align:right;padding-top:4px;font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);font-weight:500}
+.tl-line{background:var(--gray-200);position:relative}
+.tl-dot{width:14px;height:14px;border-radius:50%;background:var(--navy);border:3px solid var(--sky);position:absolute;top:2px;left:-6.5px;box-shadow:var(--shadow-sm)}
+.tl-content{padding-bottom:0}
+.tl-content h4{color:var(--navy);margin-bottom:4px;font-size:.95rem}
+.tl-content p{font-size:.85rem;color:var(--text-muted)}
+
+/* ── TEAM ── */
+.team-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)}
+.team-avatar{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,var(--navy),var(--blue));display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:#fff}
+.team-name{font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.team-role{font-size:.8rem;color:var(--blue-bright);font-weight:600;margin-bottom:12px;font-family:var(--font-mono)}
+.team-bio{font-size:.85rem;color:var(--text-muted);line-height:1.65}
+.team-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.team-tag{padding:3px 10px;border-radius:20px;background:var(--light-blue);color:var(--navy);font-size:.7rem;font-weight:500}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.83rem;font-weight:600;color:var(--navy);margin-bottom:7px}
+.form-control{
+  width:100%;padding:11px 15px;border-radius:10px;
+  border:1.5px solid var(--gray-200);background:var(--white);
+  font-family:var(--font-body);font-size:.9rem;color:var(--text-dark);
+  transition:border-color .2s;outline:none;
+}
+.form-control:focus{border-color:var(--blue-bright)}
+textarea.form-control{resize:vertical;min-height:110px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-submit{
+  width:100%;padding:13px;border-radius:10px;background:var(--navy);color:#fff;
+  font-family:var(--font-body);font-size:.95rem;font-weight:600;border:none;cursor:pointer;
+  transition:background .2s;margin-top:6px;
+}
+.form-submit:hover{background:var(--blue)}
+
+.contact-info-card{background:var(--navy);border-radius:var(--radius-lg);padding:36px;color:#fff}
+.contact-info-card h3{color:#fff;margin-bottom:16px}
+.contact-info-card p{color:rgba(255,255,255,.6);margin-bottom:28px;font-size:.95rem}
+.contact-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.contact-item-icon{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-item-icon svg{width:18px;height:18px;color:rgba(255,255,255,.8)}
+.contact-item-text{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.6}
+.contact-item-label{font-weight:600;color:#fff;font-size:.9rem;margin-bottom:2px}
+
+/* ── FOOTER ── */
+.footer{
+  background:var(--navy-deep);color:rgba(255,255,255,.5);
+  padding:32px 56px;display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;
+}
+.footer-brand{display:flex;align-items:center;gap:10px}
+.footer-brand-name{font-family:var(--font-head);font-size:1rem;font-weight:700;color:#fff}
+.footer-links{display:flex;gap:22px}
+.footer-links a{font-size:.8rem;color:rgba(255,255,255,.45);cursor:pointer;transition:color .15s}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.08em}
+
+/* ── PILL STATUS ── */
+.status-pills{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pill{padding:5px 13px;border-radius:20px;font-size:.72rem;font-weight:600;font-family:var(--font-mono)}
+.pill-blue{background:var(--light-blue);color:var(--navy)}
+.pill-green{background:var(--green-light);color:#065F46}
+.pill-amber{background:var(--amber-light);color:#92400E}
+
+/* ── AI CHAT ── */
+.ai-chat-btn{
+  position:fixed;bottom:28px;right:28px;z-index:1000;
+  width:54px;height:54px;border-radius:50%;
+  background:var(--navy);color:#fff;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-lg);transition:all .2s;
+}
+.ai-chat-btn:hover{background:var(--blue);transform:scale(1.06)}
+.ai-chat-btn svg{width:24px;height:24px}
+.ai-chat-panel{
+  position:fixed;bottom:96px;right:28px;z-index:999;width:340px;
+  background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);display:none;flex-direction:column;overflow:hidden;
+}
+.ai-chat-panel.open{display:flex}
+.ai-chat-header{background:var(--navy);padding:16px 20px;display:flex;align-items:center;gap:10px}
+.ai-chat-header h4{color:#fff;font-family:var(--font-head);font-size:.95rem;flex:1}
+.ai-chat-close{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:1.1rem;line-height:1}
+.ai-chat-msgs{flex:1;padding:16px;max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.chat-msg{padding:10px 14px;border-radius:12px;font-size:.85rem;line-height:1.55;max-width:88%}
+.chat-msg.bot{background:var(--gray-100);color:var(--text-dark);align-self:flex-start;border-radius:12px 12px 12px 4px}
+.chat-msg.user{background:var(--navy);color:#fff;align-self:flex-end;border-radius:12px 12px 4px 12px}
+.ai-chat-quick{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--gray-100)}
+.quick-btn{padding:4px 10px;border-radius:20px;background:var(--light-blue);color:var(--navy);font-size:.72rem;border:none;cursor:pointer;transition:background .15s;white-space:nowrap}
+.quick-btn:hover{background:var(--sky-mid)}
+.ai-chat-input{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--gray-100)}
+.ai-chat-input input{flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid var(--gray-200);font-family:var(--font-body);font-size:.85rem;outline:none}
+.ai-chat-input input:focus{border-color:var(--blue-bright)}
+.ai-chat-send{padding:8px 14px;border-radius:8px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-size:.8rem;font-weight:600}
+
+/* ── TOAST ── */
+#toastStack{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--navy);color:#fff;padding:10px 22px;border-radius:10px;font-size:.85rem;font-family:var(--font-body);box-shadow:var(--shadow-lg);animation:toastIn .3s ease;white-space:nowrap}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── DEMO WIDGET ── */
+.demo-widget{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-md)}
+.demo-widget h3{color:var(--navy);margin-bottom:6px}
+.demo-widget .sub{font-size:.88rem;color:var(--text-muted);margin-bottom:24px}
+.demo-select{width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid var(--gray-200);font-family:var(--font-body);font-size:.9rem;color:var(--text-dark);margin-bottom:14px;outline:none}
+.demo-select:focus{border-color:var(--blue-bright)}
+.demo-output{background:var(--sky);border:1px solid var(--sky-mid);border-radius:12px;padding:22px;margin-top:16px;display:none}
+.demo-score{font-family:var(--font-head);font-size:2.6rem;font-weight:800;color:var(--navy)}
+.demo-bars{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.demo-bar-row{display:flex;align-items:center;gap:10px;font-size:.8rem}
+.demo-bar-label{width:110px;color:var(--text-muted);flex-shrink:0}
+.demo-bar-track{flex:1;height:8px;background:var(--gray-200);border-radius:4px;overflow:hidden}
+.demo-bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--blue-bright));border-radius:4px;width:0%;transition:width .6s ease}
+.demo-bar-val{width:36px;text-align:right;color:var(--navy);font-weight:600}
+.demo-insight{margin-top:16px;padding:14px;background:var(--light-blue);border-radius:10px;font-size:.85rem;color:var(--navy);line-height:1.6}
+.demo-run-btn{width:100%;padding:12px;border-radius:10px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:var(--font-body);font-size:.92rem;font-weight:600;transition:background .2s}
+.demo-run-btn:hover{background:var(--blue)}
+
+/* ── MARKET CALLOUT ── */
+.callout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px}
+.callout{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;text-align:center;box-shadow:var(--shadow-sm)}
+.callout-val{font-family:var(--font-head);font-size:2.4rem;font-weight:800;color:var(--navy);display:block}
+.callout-desc{font-size:.85rem;color:var(--text-muted);margin-top:6px}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--gray-200);margin:40px 0}
+.page-footer-block{flex-shrink:0}
+
+/* ── EVIDENCE FLOW VISUAL ── */
+.evidence-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px}
+.ev-step{background:var(--sky);border:1.5px solid var(--sky-mid);border-radius:12px;padding:16px 12px;text-align:center;position:relative}
+.ev-step::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--blue);font-size:1rem;font-weight:700}
+.ev-step:last-child::after{display:none}
+.ev-step-icon{font-size:1.5rem;margin-bottom:6px}
+.ev-step-label{font-size:.72rem;font-weight:600;color:var(--navy);font-family:var(--font-mono)}
+
+/* ── FINANCIAL TABLE ── */
+.fin-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.fin-table th{background:var(--navy);color:#fff;padding:12px 18px;text-align:left;font-family:var(--font-body);font-weight:600;font-size:.85rem}
+.fin-table td{padding:12px 18px;border-bottom:1px solid var(--gray-100)}
+.fin-table tr:last-child td{border-bottom:none;font-weight:700;background:var(--sky)}
+.fin-table tr:nth-child(even) td:not(.footer td){background:var(--gray-50)}
+.fin-pos{color:var(--green);font-weight:600}
+.fin-neg{color:var(--red);font-weight:600}
+.fin-table th:first-child{border-radius:10px 0 0 0}
+.fin-table th:last-child{border-radius:0 10px 0 0}
+
+/* Scrollable table wrapper */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+
+/* highlight box */
+.highlight-box{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:var(--radius-lg);padding:40px;color:#fff;margin-bottom:40px}
+.highlight-box h3{color:#fff;margin-bottom:10px}
+.highlight-box p{color:rgba(255,255,255,.7)}
+
+/* ── HAMBURGER / MOBILE NAV ── */
+.mob-topbar{
+  display:none;position:sticky;top:0;z-index:600;
+  background:var(--navy);height:56px;padding:0 18px;
+  align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.mob-brand{display:flex;align-items:center;gap:9px}
+.mob-brand-icon{width:34px;height:34px;border-radius:9px;background:var(--blue-bright);display:flex;align-items:center;justify-content:center}
+.mob-brand-icon svg{width:18px;height:18px}
+.mob-brand-name{font-family:var(--font-head);font-size:1.05rem;font-weight:700;color:#fff}
+.mob-brand-name span{color:#60A5FA}
+.hamburger{background:none;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:5px}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.mob-drawer{
+  position:fixed;top:56px;left:0;right:0;bottom:0;background:var(--navy);
+  z-index:550;overflow-y:auto;display:none;flex-direction:column;
+  padding:12px;
+}
+.mob-drawer.open{display:flex}
+.mob-nav-item{
+  display:flex;align-items:center;gap:11px;width:100%;padding:13px 16px;border-radius:10px;
+  background:none;border:none;color:rgba(255,255,255,.6);
+  font-family:var(--font-body);font-size:.95rem;font-weight:500;cursor:pointer;text-align:left;
+  margin-bottom:2px;transition:all .15s;
+}
+.mob-nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.6}
+.mob-nav-item:hover,.mob-nav-item.active{background:var(--blue-bright);color:#fff;}
+.mob-nav-item.active svg,.mob-nav-item:hover svg{opacity:1}
+.mob-nav-label{font-family:var(--font-mono);font-size:.52rem;letter-spacing:.18em;color:rgba(255,255,255,.22);text-transform:uppercase;padding:12px 16px 4px}
+.mob-cta{margin:14px 0 0;width:100%;padding:13px;border-radius:10px;background:var(--blue-bright);border:none;color:#fff;font-family:var(--font-body);font-size:.95rem;font-weight:600;cursor:pointer}
+
+/* ── ADVANCED FOOTER ── */
+.footer-advanced{
+  background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.08);flex-shrink:0;
+}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+  padding:52px 56px 40px;
+}
+.footer-col h5{font-family:var(--font-head);font-size:1rem;font-weight:700;color:#fff;margin-bottom:16px}
+.footer-col-brand p{font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.75;max-width:260px;margin-top:10px}
+.footer-brand-logo{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.footer-brand-icon{width:38px;height:38px;border-radius:10px;background:var(--blue-bright);display:flex;align-items:center;justify-content:center}
+.footer-brand-icon svg{width:20px;height:20px}
+.footer-brand-title{font-family:var(--font-head);font-size:1.2rem;font-weight:700;color:#fff}
+.footer-brand-title span{color:#60A5FA}
+.footer-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.footer-badge{padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-family:var(--font-mono);font-size:.55rem;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:9px}
+.footer-col ul li a,.footer-col ul li button{
+  font-size:.85rem;color:rgba(255,255,255,.45);cursor:pointer;
+  background:none;border:none;padding:0;font-family:var(--font-body);
+  transition:color .15s;text-align:left;
+}
+.footer-col ul li a:hover,.footer-col ul li button:hover{color:#fff}
+.footer-contact-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.footer-contact-icon{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.footer-contact-icon svg{width:15px;height:15px;color:rgba(255,255,255,.6)}
+.footer-contact-text{font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.55}
+.footer-contact-label{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.75);margin-bottom:2px}
+.footer-divider{height:1px;background:rgba(255,255,255,.07);margin:0 56px}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 56px;flex-wrap:wrap;gap:12px;
+}
+.footer-bottom-left{font-family:var(--font-mono);font-size:.6rem;color:rgba(255,255,255,.3);letter-spacing:.08em}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{font-size:.75rem;color:rgba(255,255,255,.3);cursor:pointer;transition:color .15s}
+.footer-bottom-links a:hover{color:rgba(255,255,255,.7)}
+.footer-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#34D399;margin-right:6px;animation:pulse 2.5s ease-in-out infinite}
+
+/* ── RESPONSIVE BASICS ── */
+@media(max-width:1100px){
+  .cards-4{grid-template-columns:repeat(2,1fr)}
+  .pricing-grid{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:880px){
+  .sidebar{display:none}
+  .mob-topbar{display:flex}
+  .main{margin-left:0;padding-top:0}
+  .topbar{display:none}
+  .section{padding:28px 18px}
+  .hero{padding:36px 18px 44px}
+  .hero-grid,.feature-row,.cards-3,.cards-2,.contact-grid,.metrics-bar,.callout-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .evidence-flow{grid-template-columns:repeat(2,1fr)}
+  .workflow{flex-direction:column;gap:20px}
+  .workflow::before{display:none}
+  .hero-btns{flex-direction:column}
+  .hero-btns .btn-primary,.hero-btns .btn-outline{width:100%;text-align:center}
+  .section-header h2{font-size:1.5rem}
+  h1{font-size:2rem}
+  .metrics-bar{grid-template-columns:1fr 1fr;gap:16px;padding:28px 22px}
+  .metric{border-right:none;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:16px;padding-right:0}
+  .metric:nth-child(odd){border-right:1px solid rgba(255,255,255,.1);padding-right:16px}
+  .metric:nth-last-child(-n+2){border-bottom:none}
+  .ai-chat-panel{width:calc(100vw - 24px);right:12px;bottom:80px}
+  .ai-chat-btn{bottom:16px;right:16px}
+  .footer-top{grid-template-columns:1fr 1fr;gap:28px;padding:36px 20px 28px}
+  .footer-divider{margin:0 20px}
+  .footer-bottom{padding:16px 20px;flex-direction:column;align-items:flex-start;gap:8px}
+  .footer-col-brand{grid-column:span 2}
+}
+@media(max-width:520px){
+  .footer-top{grid-template-columns:1fr}
+  .footer-col-brand{grid-column:span 1}
+  .section{padding:22px 14px}
+  .hero{padding:28px 14px 36px}
+  .card{padding:20px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .evidence-flow{grid-template-columns:1fr 1fr}
+  .table-wrap{font-size:.75rem}
+  .comp-table th,.comp-table td{padding:9px 10px}
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<div class="mob-topbar" id="mobTopbar">
+  <div class="mob-brand">
+    <div class="mob-brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="white" opacity=".9"/>
+        <path d="M9 12l2 2 4-4" stroke="#1A4FBF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="mob-brand-name">Case<span>Flow</span></div>
+  </div>
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleMobDrawer()">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- MOBILE DRAWER -->
+<div class="mob-drawer" id="mobDrawer">
+  <div class="mob-nav-label">Platform</div>
+  <button class="mob-nav-item active" id="mobnav-home" onclick="showPage('home',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Overview
+  </button>
+  <button class="mob-nav-item" id="mobnav-problem" onclick="showPage('problem',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    The Problem
+  </button>
+  <button class="mob-nav-item" id="mobnav-solution" onclick="showPage('solution',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    The Solution
+  </button>
+  <button class="mob-nav-item" id="mobnav-market" onclick="showPage('market',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Market Analysis
+  </button>
+  <button class="mob-nav-item" id="mobnav-competition" onclick="showPage('competition',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Competition
+  </button>
+  <div class="mob-nav-label">Business</div>
+  <button class="mob-nav-item" id="mobnav-product" onclick="showPage('product',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Product Roadmap
+  </button>
+  <button class="mob-nav-item" id="mobnav-financials" onclick="showPage('financials',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    Financials
+  </button>
+  <button class="mob-nav-item" id="mobnav-team" onclick="showPage('team',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    Team &amp; Founder
+  </button>
+  <button class="mob-nav-item" id="mobnav-risk" onclick="showPage('risk',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Risk Mitigation
+  </button>
+  <button class="mob-nav-item" id="mobnav-demo" onclick="showPage('demo',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Live Demo
+  </button>
+  <button class="mob-nav-item" id="mobnav-contact" onclick="showPage('contact',null);closeMobDrawer()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    Contact
+  </button>
+  <button class="mob-cta" onclick="showPage('demo',null);closeMobDrawer()">Request a Demo</button>
+</div>
+
+
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="brand-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="white" opacity=".9"/>
+          <path d="M9 12l2 2 4-4" stroke="#1A4FBF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-name">Case<span>Flow</span></div>
+    </div>
+    <div class="brand-tagline">Dispute Resolution Platform · 2026</div>
+  </div>
+  <div class="sidebar-badge">
+    <span class="live-dot"></span>
+    PLATFORM ACTIVE · UK INNOVATOR VISA
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Platform</div>
+    <button class="nav-item active" onclick="showPage('home',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Overview
+    </button>
+    <button class="nav-item" onclick="showPage('problem',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      The Problem
+    </button>
+    <button class="nav-item" onclick="showPage('solution',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      The Solution
+    </button>
+    <button class="nav-item" onclick="showPage('market',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Market Analysis
+    </button>
+    <button class="nav-item" onclick="showPage('competition',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Competition
+    </button>
+    <div class="nav-label">Business</div>
+    <button class="nav-item" onclick="showPage('product',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Product Roadmap
+    </button>
+    <button class="nav-item" onclick="showPage('financials',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Financials
+    </button>
+    <button class="nav-item" onclick="showPage('team',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Team &amp; Founder
+    </button>
+    <button class="nav-item" onclick="showPage('risk',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Risk Mitigation
+    </button>
+    <button class="nav-item" onclick="showPage('demo',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Live Demo
+    </button>
+    <button class="nav-item" onclick="showPage('contact',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contact
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="sidebar-cta" onclick="showPage('demo',document.querySelector('.nav-item'))">
+      Request a Demo
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Platform Overview</div>
+    <div class="topbar-right">
+      <div class="topbar-chip">UK Innovator Founder Visa 2026</div>
+      <button class="topbar-btn" onclick="showPage('contact',null)">Get Started</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: HOME / OVERVIEW
+  ════════════════════════════════════════ -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow">
+            <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#34D399"/></svg>
+            B2B SaaS · Invoice Dispute Resolution
+          </div>
+          <h1>Turn <em>Messy Disputes</em> Into Clear Outcomes</h1>
+          <p class="hero-sub">CaseFlow is a structured, evidence-based operating platform that helps UK SMEs file, resolve, and prevent recurring B2B invoice disputes  cutting the average £22,000 annual loss.</p>
+          <div class="hero-btns">
+            <button class="btn-primary" onclick="showPage('demo',null)">See Live Demo</button>
+            <button class="btn-outline" onclick="showPage('solution',null)">How It Works</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div style="font-family:var(--font-mono);font-size:.65rem;color:rgba(255,255,255,.4);margin-bottom:16px;letter-spacing:.1em;">UNIT ECONOMICS · YEAR 1–3 SUMMARY</div>
+          <div class="hero-stats">
+            <div class="hstat">
+              <span class="hstat-val">£1,740</span>
+              <div class="hstat-label">ARPU / Year</div>
+              <span class="hstat-delta">↑ to £2,112 by Y3</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat-val">83%</span>
+              <div class="hstat-label">Gross Margin</div>
+              <span class="hstat-delta">↑ 84.7% by Y3</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat-val">&lt;1mo</span>
+              <div class="hstat-label">CAC Payback</div>
+              <span class="hstat-delta">CAC just £100 Y1</span>
+            </div>
+            <div class="hstat">
+              <span class="hstat-val">£8,000</span>
+              <div class="hstat-label">Estimated LTV</div>
+              <span class="hstat-delta">4–5 yr avg lifetime</span>
+            </div>
+          </div>
+          <div style="height:1px;background:rgba(255,255,255,.1);margin:20px 0"></div>
+          <div style="font-family:var(--font-mono);font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.08em">CONFIDENTIAL · FOR VISA APPLICATION PURPOSES</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Platform Highlights</div>
+        <h2>Why CaseFlow Exists</h2>
+        <p>SMEs lose billions annually to invoice disputes managed through emails and spreadsheets. CaseFlow brings structure, evidence, and auditability to commercial dispute resolution.</p>
+      </div>
+
+      <div class="cards-grid cards-3">
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--navy)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h4>Evidence Ingestion</h4>
+          <p>Upload invoices, POs, contracts, delivery notes, email exports and photos. Structured capture with completeness checks ensures nothing is missed.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--navy)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h4>Root-Cause Taxonomy</h4>
+          <p>Standard reason codes map each dispute to required evidence checklists and resolution playbooks  price mismatch, quantity variance, quality claims and more.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--navy)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h4>Timeline Builder</h4>
+          <p>Chronological single version of events from contract through to dispute notice. Automatically flags missing artefacts and contradictory data points.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--navy)"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <h4>Evidence Sufficiency Scoring</h4>
+          <p>Quantifiable completeness assessment detects missing documentation or discrepancies  measuring proof quality, not predicting legal outcomes.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--navy)"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013 12.27a19.79 19.79 0 01-3.07-8.67A2 2 0 011.95 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <h4>Resolution Package Generator</h4>
+          <p>Structured pack including factual dispute summary, versioned evidence index, quantified commercial options, and template communications  outputs, not legal advice.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--navy)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h4>Legal-Safe by Construction</h4>
+          <p>Templates separate facts from interpretation, disallow advisory language, and include built-in disclaimers  allowing non-legal staff to create professional documentation safely.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="metrics-bar">
+        <div class="metric">
+          <span class="metric-val">£11bn</span>
+          <span class="metric-label">Annual cost of late payments to UK economy</span>
+          <span class="metric-delta">Source: Small Business Commissioner</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">52%</span>
+          <span class="metric-label">SMEs receiving late payments within 3 months</span>
+          <span class="metric-delta">Source: FSB, 2022</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">50k</span>
+          <span class="metric-label">Businesses closing annually due to late payments</span>
+          <span class="metric-delta">Source: Department for Business &amp; Trade</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">£22k</span>
+          <span class="metric-label">Average annual loss per SME from payment friction</span>
+          <span class="metric-delta">Source: Dept. for Business &amp; Trade, 2024</span>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: THE PROBLEM
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-problem">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Market Gap</div>
+        <h2>The Problem SMEs Face Every Day</h2>
+        <p>52% of UK SMEs experience late payments within any 3-month period. Yet no widely adopted platform helps them systematically rebuild the evidence trail needed to resolve disputes professionally.</p>
+      </div>
+
+      <div class="callout-grid">
+        <div class="callout">
+          <span class="callout-val">36%</span>
+          <div class="callout-desc">of overdue payments are due to administrative mistakes  process failure, not deliberate default</div>
+        </div>
+        <div class="callout">
+          <span class="callout-val">31hrs</span>
+          <div class="callout-desc">average hours per month SMEs spend chasing invoices, per NatWest 2023 report</div>
+        </div>
+        <div class="callout">
+          <span class="callout-val">19%</span>
+          <div class="callout-desc">of micro-businesses take legal steps to recover late payments  vs 42% of large firms</div>
+        </div>
+      </div>
+
+      <div class="cards-grid cards-2">
+        <div class="chart-wrap">
+          <div class="chart-title">Root Causes of Disputed Payments</div>
+          <div class="chart-sub">UK SME survey data on payment delay attribution</div>
+          <div class="chart-canvas-wrap"><canvas id="causeChart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">SME Willingness to Pay for Dispute Management Software</div>
+          <div class="chart-sub">Survey validation across pricing bands</div>
+          <div class="chart-canvas-wrap"><canvas id="wtpChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="feature-row">
+        <div class="feature-text">
+          <h3>A Gap Between Informal Chasing and Expensive Litigation</h3>
+          <p>SMEs exist in a no-man's-land: too small to engage expensive legal processes, yet too unstructured to resolve disputes professionally. Tools like Xero record the invoice; Chaser chases the payment. Neither rebuilds the evidence trail when a customer disputes.</p>
+          <ul class="feature-list">
+            <li>73% of SMEs negatively impacted by late invoices (QuickBooks, 2023)</li>
+            <li>Average outstanding owed: £27,214 per business</li>
+            <li>33% avoid legal action to protect customer relationships</li>
+            <li>Disputes managed via email, spreadsheets and ad-hoc calls</li>
+            <li>Documentation incomplete when negotiation begins</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);margin-bottom:14px;letter-spacing:.1em;">CURRENT SME DISPUTE HANDLING</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:var(--sky);border:1.5px solid #FCA5A5;border-radius:10px;padding:14px;font-size:.85rem;">
+              <strong style="color:#991B1B">Invoice disputed</strong>
+              <p style="margin-top:4px;color:var(--text-muted);font-size:.82rem">Customer emails with vague objection. Finance team scrambles to find original PO.</p>
+            </div>
+            <div style="background:var(--sky);border:1.5px solid #FCD34D;border-radius:10px;padding:14px;font-size:.85rem;">
+              <strong style="color:#92400E">Manual evidence gathering</strong>
+              <p style="margin-top:4px;color:var(--text-muted);font-size:.82rem">Hours spent searching emails, shared drives, and accounting software across departments.</p>
+            </div>
+            <div style="background:var(--sky);border:1.5px solid #FCA5A5;border-radius:10px;padding:14px;font-size:.85rem;">
+              <strong style="color:#991B1B">Incomplete documentation</strong>
+              <p style="margin-top:4px;color:var(--text-muted);font-size:.82rem">Negotiation starts before evidence is assembled. Weak position. Relationship at risk.</p>
+            </div>
+            <div style="background:var(--green-light);border:1.5px solid #6EE7B7;border-radius:10px;padding:14px;font-size:.85rem;">
+              <strong style="color:#065F46">CaseFlow changes this</strong>
+              <p style="margin-top:4px;color:var(--text-muted);font-size:.82rem">Structured workflow, evidence graph, and audit-ready resolution package  in one platform.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: THE SOLUTION
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-solution">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">How It Works</div>
+        <h2>The CaseFlow Operating System</h2>
+        <p>Five core capabilities transform fragmented dispute records into structured, audit-ready evidence packs  enabling faster commercial resolution without legal risk.</p>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:36px;margin-bottom:42px;box-shadow:var(--shadow-sm)">
+        <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:16px">DISPUTE RESOLUTION WORKFLOW</div>
+        <div class="evidence-flow">
+          <div class="ev-step"><div class="ev-step-icon">📁</div><div class="ev-step-label">Evidence Ingestion</div></div>
+          <div class="ev-step"><div class="ev-step-icon">🏷️</div><div class="ev-step-label">Root-Cause Taxonomy</div></div>
+          <div class="ev-step"><div class="ev-step-icon">🔗</div><div class="ev-step-label">Evidence Graph</div></div>
+          <div class="ev-step"><div class="ev-step-icon">📅</div><div class="ev-step-label">Timeline Builder</div></div>
+          <div class="ev-step"><div class="ev-step-icon">📦</div><div class="ev-step-label">Resolution Package</div></div>
+        </div>
+      </div>
+
+      <div class="feature-row" style="margin-bottom:50px">
+        <div class="feature-text">
+          <div style="background:var(--light-blue);color:var(--navy);padding:4px 12px;border-radius:20px;font-size:.7rem;font-weight:600;display:inline-block;margin-bottom:12px;font-family:var(--font-mono)">01 · EVIDENCE INGESTION</div>
+          <h3>Capture Every Document That Matters</h3>
+          <p>Users upload invoices, POs, contracts, delivery notes, email exports and photos. Structured metadata capture with human-reviewed completeness checks ensures nothing is missing before a case proceeds.</p>
+          <ul class="feature-list">
+            <li>CSV invoice import with automatic field mapping</li>
+            <li>PDF, image, and email export support</li>
+            <li>Human-reviewed completeness scoring</li>
+            <li>Secure cloud storage with UK GDPR compliance</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);margin-bottom:16px">DOCUMENT UPLOAD STATUS</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--green-light);border-radius:8px;font-size:.82rem">
+              <span style="color:#065F46;font-weight:600">INV-2024-0341.pdf</span>
+              <span style="color:#065F46;font-family:var(--font-mono);font-size:.7rem">✓ Verified</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--green-light);border-radius:8px;font-size:.82rem">
+              <span style="color:#065F46;font-weight:600">PO-BuyerCo-0189.pdf</span>
+              <span style="color:#065F46;font-family:var(--font-mono);font-size:.7rem">✓ Verified</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--amber-light);border-radius:8px;font-size:.82rem">
+              <span style="color:#92400E;font-weight:600">DeliveryConfirmation.jpg</span>
+              <span style="color:#92400E;font-family:var(--font-mono);font-size:.7rem">⚠ Review</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#FEE2E2;border-radius:8px;font-size:.82rem">
+              <span style="color:#991B1B;font-weight:600">ServiceAcceptance.pdf</span>
+              <span style="color:#991B1B;font-family:var(--font-mono);font-size:.7rem">✗ Missing</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:12px;background:var(--sky);border-radius:8px;font-size:.8rem;color:var(--navy)">
+            <strong>Evidence Score: 72%</strong>  1 document missing. Service acceptance required before resolution package can be generated.
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row reverse" style="margin-bottom:50px">
+        <div class="feature-text">
+          <div style="background:var(--light-blue);color:var(--navy);padding:4px 12px;border-radius:20px;font-size:.7rem;font-weight:600;display:inline-block;margin-bottom:12px;font-family:var(--font-mono)">02–03 · TAXONOMY & EVIDENCE GRAPH</div>
+          <h3>The Claim-Level Provenance Spine</h3>
+          <p>CaseFlow's proprietary data architecture links every claim to specific operational events and the artefacts that prove them. A delivery claim maps directly to dispatch records, delivery confirmations, and acceptance evidence  creating machine-readable traceability.</p>
+          <ul class="feature-list">
+            <li>Standard reason codes: price mismatch, quantity variance, quality claim, missing PO, acceptance dispute</li>
+            <li>Automatic evidence checklist generation per dispute type</li>
+            <li>Contradiction detection between conflicting documents</li>
+            <li>Claim → Event → Artefact provenance mapping</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);margin-bottom:16px">CLAIM TAXONOMY · ACTIVE CASE</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="padding:14px;border:1.5px solid var(--navy);border-radius:10px;background:var(--sky)">
+              <div style="font-weight:700;color:var(--navy);font-size:.88rem">Dispute: Price Mismatch</div>
+              <div style="font-size:.75rem;color:var(--text-muted);margin-top:4px">Invoice £14,200 · PO Reference £12,800 · Variance: £1,400</div>
+              <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+                <span class="pill pill-green">PO Linked</span>
+                <span class="pill pill-blue">Invoice Linked</span>
+                <span class="pill pill-amber">Approval Email Pending</span>
+              </div>
+            </div>
+            <div style="padding:12px 14px;border:1px solid var(--gray-200);border-radius:10px;background:var(--white);font-size:.82rem">
+              <strong style="color:var(--navy)">Evidence Checklist</strong>
+              <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+                <div>✓ <span style="color:var(--text-muted)">Original Purchase Order</span></div>
+                <div>✓ <span style="color:var(--text-muted)">Signed Contract Terms</span></div>
+                <div style="color:#D97706">○ <span>Price Change Approval</span></div>
+                <div style="color:#D97706">○ <span>Variation Order (if any)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow">
+        <div class="wstep">
+          <div class="wstep-num">1</div>
+          <h4>Case Created</h4>
+          <p>User opens dispute, selects root-cause category</p>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">2</div>
+          <h4>Documents Uploaded</h4>
+          <p>Evidence ingested and linked to claims via provenance spine</p>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">3</div>
+          <h4>Gaps Identified</h4>
+          <p>Sufficiency scoring flags missing or contradictory documents</p>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">4</div>
+          <h4>Timeline Built</h4>
+          <p>Chronological single version of events automatically assembled</p>
+        </div>
+        <div class="wstep">
+          <div class="wstep-num">5</div>
+          <h4>Package Generated</h4>
+          <p>Audit-ready resolution pack exported for commercial negotiation</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: MARKET ANALYSIS
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-market">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Industry & Market</div>
+        <h2>A Persistent, Quantifiable Market Opportunity</h2>
+        <p>The UK has 5.45 million micro and small businesses  99.2% of all UK businesses. Over 1.5 million are affected by late payments annually, representing a structural market gap with no adequate SaaS solution.</p>
+      </div>
+
+      <div class="callout-grid">
+        <div class="callout">
+          <span class="callout-val">5.45m</span>
+          <div class="callout-desc">UK micro and small businesses in 2024</div>
+        </div>
+        <div class="callout">
+          <span class="callout-val">1.5m+</span>
+          <div class="callout-desc">businesses affected by late payments every year</div>
+        </div>
+        <div class="callout">
+          <span class="callout-val">£26bn</span>
+          <div class="callout-desc">outstanding in late payments at any given time</div>
+        </div>
+      </div>
+
+      <div class="cards-grid cards-2" style="margin-bottom:40px">
+        <div class="chart-wrap">
+          <div class="chart-title">Late Payment Prevalence by Industry Sector</div>
+          <div class="chart-sub">Insurance and services sectors face highest rates of documentation disputes</div>
+          <div class="chart-canvas-wrap"><canvas id="sectorChart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">Market Size: UK SME Addressable Market</div>
+          <div class="chart-sub">CaseFlow targets &lt;0.01% penetration by Year 3  highly conservative</div>
+          <div class="chart-canvas-wrap"><canvas id="marketSizeChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
+          <div>
+            <div style="font-family:var(--font-head);font-size:2rem;font-weight:800;color:#fff">86 hrs</div>
+            <div style="color:rgba(255,255,255,.6);font-size:.88rem;margin-top:6px">average staff time per year chasing payments per affected business  equalling 133m hours economy-wide</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:2rem;font-weight:800;color:#fff">14,000</div>
+            <div style="color:rgba(255,255,255,.6);font-size:.88rem;margin-top:6px">businesses close each year as a result of late payments  38 every day</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:2rem;font-weight:800;color:#fff">£59–299</div>
+            <div style="color:rgba(255,255,255,.6);font-size:.88rem;margin-top:6px">CaseFlow monthly pricing  accessible to every UK SME vs £10k+ for enterprise AR tools</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow-sm)">
+        <h3 style="color:var(--navy);margin-bottom:8px">SME Demand Validation</h3>
+        <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:24px">Pilot study conducted with UK SMEs via professional networks and accountant referrals across Manchester and surrounding regions</p>
+        <div class="cards-grid cards-3">
+          <div style="text-align:center;padding:20px;background:var(--sky);border-radius:12px">
+            <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)">65%</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:6px">Need structured dispute tool</div>
+          </div>
+          <div style="text-align:center;padding:20px;background:var(--sky);border-radius:12px">
+            <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)">60%</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:6px">Willing to pilot the product</div>
+          </div>
+          <div style="text-align:center;padding:20px;background:var(--sky);border-radius:12px">
+            <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)">57%</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:6px">Willing to pay subscription</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: COMPETITION
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-competition">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Competitive Landscape</div>
+        <h2>A Category of One</h2>
+        <p>The UK SME receivables ecosystem has credit control tools, accounting software, and enterprise AR platforms  none address structured evidence-based dispute reconstruction.</p>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:40px">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Accounting Tools (Xero)</th>
+              <th>Credit Control (Chaser)</th>
+              <th>Enterprise AR (HighRadius)</th>
+              <th>CaseFlow</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Invoice database</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Evidence relationships</td><td class="cross">✗</td><td class="cross">✗</td><td class="partial">Limited</td><td class="check">✓ Core architecture</td></tr>
+            <tr><td>Claim-level modelling</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Proprietary</td></tr>
+            <tr><td>Timeline reconstruction</td><td class="cross">✗</td><td class="cross">✗</td><td class="partial">Partial</td><td class="check">✓ Auto-built</td></tr>
+            <tr><td>Evidence sufficiency scoring</td><td class="cross">✗</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓ Rule-based</td></tr>
+            <tr><td>Audit-ready resolution pack</td><td class="cross">✗</td><td class="cross">✗</td><td class="partial">Partial</td><td class="check">✓ Full manifest</td></tr>
+            <tr><td>Prevention controls</td><td class="cross">✗</td><td class="cross">✗</td><td class="partial">Analytics only</td><td class="check">✓ Operational rules</td></tr>
+            <tr><td>SME-accessible pricing</td><td class="check">✓ £10–40/mo</td><td class="check">✓ £50–200/mo</td><td class="cross">✗ £10k+/yr</td><td class="check">✓ £59–299/mo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cards-grid cards-2" style="margin-bottom:40px">
+        <div class="card">
+          <h4 style="color:var(--navy);margin-bottom:12px">How CaseFlow Differs</h4>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.83rem">
+              <div style="padding:10px;background:var(--gray-100);border-radius:8px">
+                <div style="font-weight:600;color:var(--text-muted);font-size:.72rem;margin-bottom:4px">MARKET STANDARD</div>
+                <div style="color:var(--text-body)">Dispute = communication problem</div>
+              </div>
+              <div style="padding:10px;background:var(--light-blue);border-radius:8px">
+                <div style="font-weight:600;color:var(--navy);font-size:.72rem;margin-bottom:4px">CASEFLOW</div>
+                <div style="color:var(--navy)">Dispute = evidence problem</div>
+              </div>
+              <div style="padding:10px;background:var(--gray-100);border-radius:8px">
+                <div style="font-weight:600;color:var(--text-muted);font-size:.72rem;margin-bottom:4px">DATA STRUCTURE</div>
+                <div style="color:var(--text-body)">Invoice-centric</div>
+              </div>
+              <div style="padding:10px;background:var(--light-blue);border-radius:8px">
+                <div style="font-weight:600;color:var(--navy);font-size:.72rem;margin-bottom:4px">DATA STRUCTURE</div>
+                <div style="color:var(--navy)">Claim-centric provenance spine</div>
+              </div>
+              <div style="padding:10px;background:var(--gray-100);border-radius:8px">
+                <div style="font-weight:600;color:var(--text-muted);font-size:.72rem;margin-bottom:4px">OUTPUT</div>
+                <div style="color:var(--text-body)">Reminder or report</div>
+              </div>
+              <div style="padding:10px;background:var(--light-blue);border-radius:8px">
+                <div style="font-weight:600;color:var(--navy);font-size:.72rem;margin-bottom:4px">OUTPUT</div>
+                <div style="color:var(--navy)">Audit-ready resolution package</div>
+              </div>
+              <div style="padding:10px;background:var(--gray-100);border-radius:8px">
+                <div style="font-weight:600;color:var(--text-muted);font-size:.72rem;margin-bottom:4px">LEARNING LOOP</div>
+                <div style="color:var(--text-body)">None</div>
+              </div>
+              <div style="padding:10px;background:var(--light-blue);border-radius:8px">
+                <div style="font-weight:600;color:var(--navy);font-size:.72rem;margin-bottom:4px">LEARNING LOOP</div>
+                <div style="color:var(--navy)">Dispute → operational control</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">Pricing Positioning vs Competitors</div>
+          <div class="chart-sub">CaseFlow sits in the accessible SME range with superior dispute-specific functionality</div>
+          <div class="chart-canvas-wrap"><canvas id="pricingChart"></canvas></div>
+        </div>
+      </div>
+
+      <div style="background:var(--navy);border-radius:var(--radius-lg);padding:36px;color:#fff">
+        <h3 style="color:#fff;margin-bottom:16px">Intellectual Property Protection</h3>
+        <div class="cards-grid cards-3">
+          <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:20px">
+            <div style="font-weight:700;color:#93C5FD;font-size:.88rem;margin-bottom:8px">Copyright</div>
+            <div style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.6">Source code, proprietary root-cause dispute taxonomy, and unique resolution-package templates</div>
+          </div>
+          <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:20px">
+            <div style="font-weight:700;color:#93C5FD;font-size:.88rem;margin-bottom:8px">Trade Secrets</div>
+            <div style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.6">Evidence sufficiency scoring algorithms and automated chronological single-version-of-events generation</div>
+          </div>
+          <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:20px">
+            <div style="font-weight:700;color:#93C5FD;font-size:.88rem;margin-bottom:8px">Brand Assets</div>
+            <div style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.6">"CaseFlow" trademark registration and associated logos  establishing market identity in UK SME ecosystem</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: PRODUCT ROADMAP
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-product">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">MVP & Roadmap</div>
+        <h2>Controlled, Risk-Reduced Build Strategy</h2>
+        <p>CaseFlow develops incrementally  proving customer value before adding automation. Human-supported workflows validate operational usefulness before technical complexity is introduced.</p>
+      </div>
+
+      <div class="cards-grid cards-2" style="margin-bottom:40px">
+        <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)">
+          <h3 style="color:var(--navy);margin-bottom:20px">MVP Core Features</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:.88rem">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Dispute case creation</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Document upload & CSV import</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Root-cause dispute taxonomy</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Claim → Event → Artefact linking</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Timeline builder</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Evidence checklist tracking</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Resolution pack export (PDF)</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--green-light);border-radius:8px"><span style="color:var(--green);font-weight:700">✓</span><span style="color:#065F46">Manual review workflow & basic audit trail</span></div>
+          </div>
+        </div>
+        <div class="timeline">
+          <div style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:20px">Development Phases</div>
+          <div class="tl-item">
+            <div class="tl-date">Month 1</div>
+            <div class="tl-line"><div class="tl-dot"></div></div>
+            <div class="tl-content"><h4>Phase 0 · Discovery</h4><p>SME interviews, workflow mapping, data schema design, UX wireframes</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Months 2–4</div>
+            <div class="tl-line"><div class="tl-dot"></div></div>
+            <div class="tl-content"><h4>Phase 1 · MVP Build</h4><p>Core platform, evidence ingestion, taxonomy engine, evidence graph, timeline & pack generator</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Months 5–6</div>
+            <div class="tl-line"><div class="tl-dot"></div></div>
+            <div class="tl-content"><h4>Phase 2 · Pilot Rollout</h4><p>5–8 UK SMEs onboarded, real dispute validation, feedback collection</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Months 7–10</div>
+            <div class="tl-line"><div class="tl-dot"></div></div>
+            <div class="tl-content"><h4>Phase 3 · Product Refinement</h4><p>UX improvements, evidence sufficiency scoring, role permissions, v1.0 commercial launch</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Months 11–36</div>
+            <div class="tl-line"><div class="tl-dot"></div></div>
+            <div class="tl-content"><h4>Phases 4–5 · Scale & Ecosystem</h4><p>Accounting integrations, analytics dashboards, ODR routing, international expansion</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)">
+        <h3 style="color:var(--navy);margin-bottom:20px">Product Roadmap by Horizon</h3>
+        <div class="cards-grid cards-3">
+          <div style="border:1.5px solid var(--navy);border-radius:12px;padding:22px">
+            <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--navy);letter-spacing:.1em;margin-bottom:14px">SHORT TERM · 0–12 MONTHS</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:.84rem;color:var(--text-body)">
+              <li>• MVP release & SME pilot</li>
+              <li>• Subscription launch</li>
+              <li>• Manual QA workflows</li>
+              <li>• Accountant partnerships</li>
+            </ul>
+            <div style="margin-top:14px;padding:8px 12px;background:var(--light-blue);border-radius:8px;font-size:.78rem;color:var(--navy);font-weight:600">First paying customers + product–market fit</div>
+          </div>
+          <div style="border:1.5px solid var(--blue-bright);border-radius:12px;padding:22px;background:rgba(37,99,235,.03)">
+            <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--blue-bright);letter-spacing:.1em;margin-bottom:14px">MEDIUM TERM · 12–24 MONTHS</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:.84rem;color:var(--text-body)">
+              <li>• Accounting software connectors</li>
+              <li>• Prevention control library</li>
+              <li>• Analytics dashboards</li>
+              <li>• Multi-entity support</li>
+              <li>• Accountant client portals</li>
+            </ul>
+            <div style="margin-top:14px;padding:8px 12px;background:var(--light-blue);border-radius:8px;font-size:.78rem;color:var(--navy);font-weight:600">Scalable SaaS + growing recurring revenue</div>
+          </div>
+          <div style="border:1.5px solid var(--gray-300);border-radius:12px;padding:22px">
+            <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:14px">LONG TERM · 24–36 MONTHS</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:7px;font-size:.84rem;color:var(--text-body)">
+              <li>• Advanced anomaly detection</li>
+              <li>• Benchmarking datasets</li>
+              <li>• Partner marketplace</li>
+              <li>• ODR routing integrations</li>
+              <li>• International expansion</li>
+            </ul>
+            <div style="margin-top:14px;padding:8px 12px;background:var(--light-blue);border-radius:8px;font-size:.78rem;color:var(--navy);font-weight:600">Dispute-resolution OS · Market leadership</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: FINANCIALS
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-financials">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Financial Plan</div>
+        <h2>Profitable by Year 1 · Scalable by Year 3</h2>
+        <p>Launched with a £50,000 founder investment, CaseFlow reaches profitability in Year 1 at 5.37% margin, growing to 13.44% by Year 3 with £774k revenue.</p>
+      </div>
+
+      <div class="metrics-bar" style="margin-bottom:36px">
+        <div class="metric">
+          <span class="metric-val">£76k</span>
+          <span class="metric-label">Year 1 Revenue</span>
+          <span class="metric-delta">5.37% net margin</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">£372k</span>
+          <span class="metric-label">Year 2 Revenue</span>
+          <span class="metric-delta">12.38% net margin</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">£774k</span>
+          <span class="metric-label">Year 3 Revenue</span>
+          <span class="metric-delta">13.44% net margin</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">83%+</span>
+          <span class="metric-label">Gross Margin</span>
+          <span class="metric-delta">Improving Y1→Y3</span>
+        </div>
+      </div>
+
+      <div class="cards-grid cards-2" style="margin-bottom:36px">
+        <div class="chart-wrap">
+          <div class="chart-title">Revenue & Gross Profit (3 Year)</div>
+          <div class="chart-sub">Subscription model with improving unit economics</div>
+          <div class="chart-canvas-wrap"><canvas id="revChart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-title">Customer Growth Trajectory</div>
+          <div class="chart-sub">Starting Month 6 post-pilot, growing to 450 customers by Year 3</div>
+          <div class="chart-canvas-wrap"><canvas id="custChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:36px">
+        <table class="fin-table">
+          <thead>
+            <tr>
+              <th>P&L Summary</th>
+              <th>Year 1</th>
+              <th>Year 2</th>
+              <th>Year 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Total Revenue</td><td>£76,035</td><td>£371,924</td><td>£774,411</td></tr>
+            <tr><td>Total COGS</td><td class="fin-neg">£12,926</td><td class="fin-neg">£59,508</td><td class="fin-neg">£118,098</td></tr>
+            <tr><td><strong>Gross Profit</strong></td><td><strong>£63,109</strong></td><td><strong>£312,416</strong></td><td><strong>£656,313</strong></td></tr>
+            <tr><td>Gross Margin</td><td class="fin-pos">83.0%</td><td class="fin-pos">84.0%</td><td class="fin-pos">84.7%</td></tr>
+            <tr><td>Operating Expenses (incl. payroll)</td><td class="fin-neg">£57,668</td><td class="fin-neg">£251,046</td><td class="fin-neg">£517,574</td></tr>
+            <tr><td>Profit Before Tax</td><td>£5,441</td><td>£61,371</td><td>£138,739</td></tr>
+            <tr><td>Tax</td><td class="fin-neg">£1,360</td><td class="fin-neg">£15,343</td><td class="fin-neg">£34,685</td></tr>
+            <tr><td>Net Profit</td><td class="fin-pos">£4,081</td><td class="fin-pos">£46,028</td><td class="fin-pos">£104,054</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);margin-bottom:36px">
+        <h3 style="color:var(--navy);margin-bottom:16px">Pricing Model</h3>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="price-name">Starter</div>
+            <div class="price-desc">Micro & small SMEs</div>
+            <div class="price-amount">
+              <span class="price-currency">£</span>
+              <span class="price-val">59</span>
+              <span class="price-period">/month</span>
+            </div>
+            <ul class="price-features">
+              <li>Up to 5 active disputes</li>
+              <li>Document upload & CSV import</li>
+              <li>Basic dispute taxonomy</li>
+              <li>Resolution pack export (PDF)</li>
+            </ul>
+            <button class="price-btn secondary" onclick="showPage('contact',null)">Get Started</button>
+          </div>
+          <div class="price-card featured">
+            <div class="price-badge">Most Popular</div>
+            <div class="price-name">Growth</div>
+            <div class="price-desc">Established SMEs</div>
+            <div class="price-amount">
+              <span class="price-currency">£</span>
+              <span class="price-val">149</span>
+              <span class="price-period">/month</span>
+            </div>
+            <ul class="price-features">
+              <li>Unlimited active disputes</li>
+              <li>Full evidence graph & sufficiency scoring</li>
+              <li>Timeline builder</li>
+              <li>Audit-ready resolution manifests</li>
+              <li>Role-based permissions</li>
+            </ul>
+            <button class="price-btn primary" onclick="showPage('contact',null)">Start Free Trial</button>
+          </div>
+          <div class="price-card">
+            <div class="price-name">Professional</div>
+            <div class="price-desc">High-dispute & professional users</div>
+            <div class="price-amount">
+              <span class="price-currency">£</span>
+              <span class="price-val">299</span>
+              <span class="price-period">/month</span>
+            </div>
+            <ul class="price-features">
+              <li>Everything in Growth</li>
+              <li>Prevention control library</li>
+              <li>Analytics & benchmarking</li>
+              <li>Multi-entity support</li>
+              <li>Accountant client portal access</li>
+              <li>Priority support</li>
+            </ul>
+            <button class="price-btn secondary" onclick="showPage('contact',null)">Contact Sales</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm)">
+        <h3 style="color:var(--navy);margin-bottom:16px">Sensitivity Analysis · Year 2</h3>
+        <div class="table-wrap">
+          <table class="fin-table">
+            <thead><tr><th>Scenario</th><th>Revenue</th><th>Net Profit</th><th>Margin</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Base Case</td><td>£371,924</td><td class="fin-pos">£46,028</td><td>12.38%</td><td><span class="pill pill-green">Profitable</span></td></tr>
+              <tr><td>Slower Growth (−20%)</td><td>£297,539</td><td class="fin-pos">£17,933</td><td>6.0%</td><td><span class="pill pill-green">Profitable</span></td></tr>
+              <tr><td>Lower Pricing Mix (Starter-heavy)</td><td>£316,135</td><td class="fin-pos">£14,508</td><td>4.6%</td><td><span class="pill pill-green">Profitable</span></td></tr>
+              <tr><td>Higher Marketing Spend (+30%)</td><td>£371,924</td><td class="fin-pos">£57,170</td><td>15.4%</td><td><span class="pill pill-green">Profitable</span></td></tr>
+              <tr><td>Payroll Pressure (+8%)</td><td>£371,924</td><td class="fin-pos">£51,416</td><td>13.8%</td><td><span class="pill pill-green">Profitable</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: TEAM & FOUNDER
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-team">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Founder Profile</div>
+        <h2>Experience Aligned to the Problem</h2>
+        <p>CaseFlow is founded by Neelam Kumari  a finance, compliance, and operations professional whose direct experience with structured documentation and audit-ready workflows is the foundation of the product.</p>
+      </div>
+
+      <div class="cards-grid cards-2" style="margin-bottom:40px">
+        <div class="team-card">
+          <div class="team-avatar">NK</div>
+          <div class="team-name">Neelam Kumari</div>
+          <div class="team-role">Founder & CEO</div>
+          <div class="team-bio">Finance and operations professional with an MSc in Finance from Manchester Metropolitan University. Former Academic Officer in the UK higher education sector  with hands-on experience in compliance record management, systematic case processing, and audit-ready documentation. Her background in handling complex records, maintaining regulatory compliance, and aligning stakeholders directly maps to the operational discipline required to standardise and organise business disputes.</div>
+          <div class="team-tags">
+            <span class="team-tag">MSc Finance · MMU</span>
+            <span class="team-tag">Compliance Management</span>
+            <span class="team-tag">Documentation Control</span>
+            <span class="team-tag">UK Regulatory Framework</span>
+            <span class="team-tag">Financial Analysis</span>
+            <span class="team-tag">Process Design</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm)">
+            <h4 style="color:var(--navy);margin-bottom:10px">Founder–Product Fit</h4>
+            <div style="display:flex;flex-direction:column;gap:9px;font-size:.85rem;color:var(--text-body)">
+              <div style="display:flex;gap:10px"><span style="color:var(--green);font-weight:700;flex-shrink:0">✓</span><span><strong>Compliance & Audit Readiness</strong>  Maintained audit-compliant records proving familiarity with evidence integrity and version control</span></div>
+              <div style="display:flex;gap:10px"><span style="color:var(--green);font-weight:700;flex-shrink:0">✓</span><span><strong>Financial & Analytical Capability</strong>  MSc Finance plus advanced Excel and data analysis tools for structured data modelling</span></div>
+              <div style="display:flex;gap:10px"><span style="color:var(--green);font-weight:700;flex-shrink:0">✓</span><span><strong>Process Design Thinking</strong>  Coordinated multi-stakeholder processes with systematic compliance checking  core to the CaseFlow workflow engine</span></div>
+              <div style="display:flex;gap:10px"><span style="color:var(--green);font-weight:700;flex-shrink:0">✓</span><span><strong>UK Operational Knowledge</strong>  Studied and worked in Manchester, with first-hand understanding of UK SME practices, regulatory expectations and workplace norms</span></div>
+            </div>
+          </div>
+          <div style="background:var(--navy);border-radius:var(--radius);padding:22px;color:#fff">
+            <h4 style="color:#fff;margin-bottom:10px">Planned Hiring Roadmap</h4>
+            <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:rgba(255,255,255,.65)">
+              <div style="display:flex;justify-content:space-between"><span>Software Developer</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 2</span></div>
+              <div style="display:flex;justify-content:space-between"><span>UI/UX &amp; Technical Support</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 3</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Lead / Full-Stack Engineer</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 15</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Customer Success Manager</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 16</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Sales &amp; Partnerships Lead</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 18</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Marketing &amp; Acquisition</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 21</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Data / Analytics Specialist</span><span style="font-family:var(--font-mono);font-size:.7rem;color:#93C5FD">Month 28</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--sky);border:1px solid var(--sky-mid);border-radius:var(--radius-lg);padding:36px">
+        <h3 style="color:var(--navy);margin-bottom:12px">Economic & Social Contribution to the UK</h3>
+        <p style="color:var(--text-body);margin-bottom:20px;font-size:.95rem">CaseFlow creates skilled UK jobs, reduces SME business failures linked to cash-flow disruption, increases productivity by reducing administrative workload, and supports healthier supply chains  directly aligning with UK government policy priorities on late payments and SME growth.</p>
+        <div class="cards-grid cards-3">
+          <div style="text-align:center;background:var(--white);border-radius:12px;padding:20px">
+            <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)">12+</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:5px">UK jobs created by Year 3</div>
+          </div>
+          <div style="text-align:center;background:var(--white);border-radius:12px;padding:20px">
+            <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)">450+</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:5px">SMEs served, strengthening UK supply chains</div>
+          </div>
+          <div style="text-align:center;background:var(--white);border-radius:12px;padding:20px">
+            <div style="font-family:var(--font-head);font-size:1.8rem;font-weight:800;color:var(--navy)">£50k</div>
+            <div style="font-size:.8rem;color:var(--text-muted);margin-top:5px">Founder investment  no public funding required</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: RISK MITIGATION
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-risk">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Risk Management</div>
+        <h2>Structured Risk Mitigation Across All Categories</h2>
+        <p>CaseFlow's lean operating model, phased hiring strategy, and accountant-led distribution mitigate the primary risks of early-stage SaaS.</p>
+      </div>
+
+      <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);margin-bottom:36px">
+        <div style="display:grid;grid-template-columns:2fr 1fr 2fr;gap:0;padding:12px 0;border-bottom:1.5px solid var(--navy);font-weight:700;color:var(--navy);font-size:.85rem">
+          <span>Risk Category & Description</span><span>Impact Level</span><span>Mitigation Strategy</span>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Market Adoption Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">SMEs slow to adopt new dispute-management workflow</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-med">Medium</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Prioritise trusted accountant distribution channels; offer pilot programmes with measurable ROI before subscription commitment</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Product–Market Fit Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">MVP features may not fully match SME operational needs</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-med">Medium</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Structured pilot testing with iterative improvements; human-supported workflows during early stages</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Technical Development Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">Delays or technical limitations during MVP build</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-low">Low</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Modular architecture, contract developers with defined milestones; essential features only in early stages</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Data Security & GDPR Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">Handling sensitive commercial documents</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-high">High</span></div>
+          <div style="font-size:.84sm;color:var(--text-body)">Encrypted cloud hosting, access controls, privacy-by-design; legal review of data policies from Day 1</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Competition Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">Accounting or AR platforms add dispute features</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-low">Low</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Proprietary claim-level provenance architecture; prevention controls require specialised design difficult to replicate quickly</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Financial Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">Revenue growth slower than forecast in early stage</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-med">Medium</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Lean staffing model, freelancers initially; scale hiring only after recurring revenue milestones. All 5 Y2 scenarios show profitability</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">Customer Trust Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">SMEs may mistake platform for legal advice software</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-low">Low</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Non-advisory templates with built-in disclaimers; explicit operational positioning; onboarding scope guidance</div>
+        </div>
+        <div class="risk-row">
+          <div><div class="risk-cat">International Expansion Risk</div><div style="font-size:.8rem;color:var(--text-muted);margin-top:3px">Regulatory differences when entering new markets</div></div>
+          <div class="risk-impact"><span class="risk-pill risk-low">Low</span></div>
+          <div style="font-size:.84rem;color:var(--text-body)">Expand first into similar frameworks (Ireland, Australia); localise templates gradually rather than rebuilding core technology</div>
+        </div>
+      </div>
+
+      <div class="cards-grid cards-3">
+        <div class="card">
+          <div class="card-icon" style="background:var(--green-light)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h4>UK GDPR Compliance</h4>
+          <p>Privacy-by-design architecture, encrypted storage, controlled access permissions implemented from launch. Credibility with SMEs and professional partners built-in.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background:var(--green-light)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <h4>Financial Discipline</h4>
+          <p>£50k founder investment, no external debt. Lean model with contractors. Every sensitivity analysis scenario in Year 2 shows sustained profitability.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon" style="background:var(--green-light)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <h4>Partnership-Led Distribution</h4>
+          <p>Accountant referral channels reduce CAC to £100 in Year 1. Parallel direct SME outreach diversifies acquisition beyond single partnership dependency.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: LIVE DEMO
+  ════════════════════════════════════════ -->
+  <div class="page" id="page-demo">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-eyebrow">Interactive Demo</div>
+        <h2>Experience CaseFlow in Action</h2>
+        <p>Simulate how CaseFlow evaluates a real invoice dispute  selecting dispute type and industry to generate a structured evidence sufficiency report.</p>
+      </div>
+
+      <div class="cards-grid cards-2">
+        <div class="demo-widget">
+          <h3>Dispute Evidence Analyser</h3>
+          <p class="sub">Select your dispute type and sector to generate an evidence sufficiency score and resolution guidance</p>
+          <label style="font-size:.83rem;font-weight:600;color:var(--navy);display:block;margin-bottom:7px">Dispute Type</label>
+          <select class="demo-select" id="disputeType">
+            <option value="price">Price Mismatch</option>
+            <option value="delivery">Delivery Dispute</option>
+            <option value="quality">Quality Claim</option>
+            <option value="po">Missing Purchase Order</option>
+            <option value="acceptance">Service Acceptance Dispute</option>
+          </select>
+          <label style="font-size:.83rem;font-weight:600;color:var(--navy);display:block;margin-bottom:7px">Industry Sector</label>
+          <select class="demo-select" id="industrySector">
+            <option value="wholesale">Wholesale / Trade Goods</option>
+            <option value="services">Professional Services</option>
+            <option value="import">Import / Export</option>
+            <option value="construction">Construction</option>
+            <option value="tech">Technology / SaaS</option>
+          </select>
+          <button class="demo-run-btn" onclick="runDisputeDemo()">Generate Evidence Report</button>
+          <div class="demo-output" id="demoOutput">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <div>
+                <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.1em">EVIDENCE SUFFICIENCY SCORE</div>
+                <div class="demo-score" id="demoScore">0</div>
+              </div>
+              <div id="demoStatus" style="padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:700;font-family:var(--font-mono)"></div>
+            </div>
+            <div class="demo-bars">
+              <div class="demo-bar-row"><span class="demo-bar-label">Invoice Docs</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar1"></div></div><span class="demo-bar-val" id="bv1">0%</span></div>
+              <div class="demo-bar-row"><span class="demo-bar-label">Delivery Proof</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar2"></div></div><span class="demo-bar-val" id="bv2">0%</span></div>
+              <div class="demo-bar-row"><span class="demo-bar-label">Contract Terms</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar3"></div></div><span class="demo-bar-val" id="bv3">0%</span></div>
+              <div class="demo-bar-row"><span class="demo-bar-label">Comms Record</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar4"></div></div><span class="demo-bar-val" id="bv4">0%</span></div>
+            </div>
+            <div class="demo-insight" id="demoInsight"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm)">
+            <h4 style="color:var(--navy);margin-bottom:16px">Sample Active Dispute Dashboard</h4>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:11px 14px;background:var(--sky);border-radius:10px;font-size:.84rem">
+                <div><strong style="color:var(--navy)">INV-2024-0341</strong><br><span style="color:var(--text-muted);font-size:.76rem">BuyerCo Ltd · Price Mismatch · £1,400</span></div>
+                <span class="pill pill-amber">In Progress</span>
+                <span style="font-family:var(--font-mono);font-size:.7rem;color:var(--navy)">72%</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:11px 14px;background:var(--sky);border-radius:10px;font-size:.84rem">
+                <div><strong style="color:var(--navy)">INV-2024-0328</strong><br><span style="color:var(--text-muted);font-size:.76rem">Apex Trading · Delivery Dispute · £3,200</span></div>
+                <span class="pill pill-green">Resolved</span>
+                <span style="font-family:var(--font-mono);font-size:.7rem;color:var(--navy)">100%</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:11px 14px;background:var(--sky);border-radius:10px;font-size:.84rem">
+                <div><strong style="color:var(--navy)">INV-2024-0315</strong><br><span style="color:var(--text-muted);font-size:.76rem">NorthWest Supplies · Missing PO · £890</span></div>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B">Escalated</span>
+                <span style="font-family:var(--font-mono);font-size:.7rem;color:var(--navy)">45%</span>
+              </div>
+            </div>
+            <div style="margin-top:14px;padding:12px;background:var(--navy);border-radius:10px;font-size:.8rem;color:rgba(255,255,255,.7)">
+              <strong style="color:#fff">Prevention Alert:</strong> 3 recurring disputes linked to missing PO documentation. Suggested control: require PO confirmation before invoicing.
+            </div>
+          </div>
+
+          <div style="background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm)">
+            <h4 style="color:var(--navy);margin-bottom:12px">Resolution Package Preview</h4>
+            <div style="background:var(--sky);border:1px solid var(--sky-mid);border-radius:10px;padding:16px;font-size:.82rem;line-height:1.7;color:var(--text-body)">
+              <div style="font-weight:700;color:var(--navy);margin-bottom:8px">DISPUTE RESOLUTION SUMMARY  CF-2024-0341</div>
+              <div>Dispute Type: <strong>Price Mismatch</strong> | Root Cause: Variation not formally approved</div>
+              <div>Invoice Amount: £14,200 | Agreed PO Value: £12,800 | Variance: £1,400</div>
+              <div style="margin-top:8px;padding:8px;background:#fff;border-radius:8px">
+                <strong>Commercial Options Proposed:</strong><br>
+                1. Partial payment of £12,800 (PO value) with credit note for £1,400<br>
+                2. Staged settlement: £12,800 now, £1,400 subject to approval evidence<br>
+                3. Re-performance discussion with revised scope agreement
+              </div>
+              <div style="margin-top:8px;font-size:.74rem;color:var(--text-muted);font-style:italic">This document represents structured factual summary only and does not constitute legal advice.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAGE: CONTACT
+════════════════════════════════════════ -->
+<div class="page" id="page-contact">
+  <div class="section">
+
+    <div class="section-header">
+      <div class="section-eyebrow">Get in Touch</div>
+      <h2 style="color:#0b1f3a;">Start Your CaseFlow Journey</h2>
+      <p style="color:#000;">
+        Whether you're a UK SME dealing with invoice disputes, an accountant looking for a partner tool,
+        or an investor interested in the opportunity  we'd love to hear from you.
+      </p>
+    </div>
+
+    <div class="contact-grid">
+
+      <!-- FORM START -->
+      <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+
+        <!-- ACCESS KEY (MUST BE INSIDE FORM) -->
+        <input type="hidden" name="access_key" value="679bb3e5-f979-43e5-8b92-df59dd052bfd">
+
+        <div>
+          <div class="form-row">
+
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" class="form-control" name="first_name" placeholder="Jane" required>
+            </div>
+
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" class="form-control" name="last_name" placeholder="Smith" required>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="form-control" name="email" placeholder="jane@company.co.uk" required>
+          </div>
+
+          <div class="form-group">
+            <label>Company</label>
+            <input type="text" class="form-control" name="company" placeholder="Smith & Co Ltd">
+          </div>
+
+          <div class="form-group">
+            <label>I'm interested in</label>
+            <select class="form-control" name="interest">
+              <option>Resolving invoice disputes (SME)</option>
+              <option>Accountant / Referral Partnership</option>
+              <option>Investor Enquiry</option>
+              <option>General Information</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Message</label>
+            <textarea class="form-control" name="message"
+              placeholder="Tell us a bit about your situation..." required></textarea>
+          </div>
+
+          <button type="submit" class="form-submit">Send Message</button>
+
+          <!-- STATUS -->
+          <div id="form-status" style="margin-top:10px;font-size:14px;"></div>
+
+        </div>
+      </form>
+      <!-- FORM END -->
+
+
+      <!-- RIGHT SIDE (UNCHANGED DESIGN) -->
+      <div>
+        <div class="contact-info-card" style="background:#0b1f3a;color:#fff;">
+          <h3>CaseFlow</h3>
+          <p>Turn messy disputes into clear outcomes. We're building the operating system for B2B invoice dispute management.</p>
+
+          <div class="contact-item">
+            <div>
+              <div class="contact-item-label">Headquarters</div>
+              <div class="contact-item-text">Manchester, United Kingdom</div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div>
+              <div class="contact-item-label">Email</div>
+              <div class="contact-item-text">caseflowuk@outlook.com</div>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div>
+              <div class="contact-item-label">Platform</div>
+              <div class="contact-item-text">B2B SaaS · UK SME Focus</div>
+            </div>
+          </div>
+ <!-- ADDED VALUE SECTION -->
+    <div style="margin-top:20px;padding:14px;background:rgba(255,255,255,0.08);border-radius:10px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">What CaseFlow Enables</div>
+      <ul style="margin:0;padding-left:16px;font-size:13px;line-height:1.6;">
+        <li>Structured dispute timelines for clarity</li>
+        <li>Organised evidence packs for faster resolution</li>
+        <li>Simple summaries for internal and external communication</li>
+        <li>Improved recovery outcomes for SMEs</li>
+      </ul>
+    </div>
+
+    <!-- TRUST LINE -->
+    <div style="margin-top:16px;font-size:12px;color:rgba(255,255,255,0.7);">
+      Built for real SME workflows. No legal complexity. No AI overpromises  just clear, structured dispute management.
+    </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- WORKING SCRIPT -->
+<script>
+const form = document.querySelector(".contact-form");
+const status = document.getElementById("form-status");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const data = new FormData(form);
+
+  status.innerHTML = "Sending...";
+  status.style.color = "#000";
+
+  fetch(form.action, {
+    method: "POST",
+    body: data
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      status.innerHTML = "Message sent successfully.";
+      status.style.color = "green";
+      form.reset();
+    } else {
+      status.innerHTML = "Failed to send message.";
+      status.style.color = "red";
+    }
+  })
+  .catch(() => {
+    status.innerHTML = "Network error.";
+    status.style.color = "red";
+  });
+});
+</script>
+    <div class="page-footer-block">
+      <footer class="footer-advanced">
+        <div class="footer-top">
+          <!-- Brand col -->
+          <div class="footer-col footer-col-brand">
+            <div class="footer-brand-logo">
+              <div class="footer-brand-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="white" opacity=".9"/>
+                  <path d="M9 12l2 2 4-4" stroke="#1A4FBF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="footer-brand-title">Case<span>Flow</span></div>
+            </div>
+            <p>Turn messy disputes into clear outcomes. The structured, evidence-based operating platform for UK SME invoice dispute resolution.</p>
+            <div class="footer-badges">
+              <span class="footer-badge">B2B SaaS</span>
+              <span class="footer-badge">UK SME Focus</span>
+              <span class="footer-badge">Innovator Founder Visa 2026</span>
+              <span class="footer-badge">Manchester, UK</span>
+            </div>
+          </div>
+          <!-- Platform col -->
+          <div class="footer-col">
+            <h5>Platform</h5>
+            <ul>
+              <li><button onclick="showPage('home',null)">Overview</button></li>
+              <li><button onclick="showPage('problem',null)">The Problem</button></li>
+              <li><button onclick="showPage('solution',null)">The Solution</button></li>
+              <li><button onclick="showPage('market',null)">Market Analysis</button></li>
+              <li><button onclick="showPage('competition',null)">Competition</button></li>
+              <li><button onclick="showPage('demo',null)">Live Demo</button></li>
+            </ul>
+          </div>
+          <!-- Business col -->
+          <div class="footer-col">
+            <h5>Business</h5>
+            <ul>
+              <li><button onclick="showPage('product',null)">Product Roadmap</button></li>
+              <li><button onclick="showPage('financials',null)">Financial Plan</button></li>
+              <li><button onclick="showPage('team',null)">Team &amp; Founder</button></li>
+              <li><button onclick="showPage('risk',null)">Risk Mitigation</button></li>
+              <li><button onclick="showPage('contact',null)">Contact Us</button></li>
+            </ul>
+          </div>
+          <!-- Contact col -->
+          <div class="footer-col">
+            <h5>Get in Touch</h5>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <div class="footer-contact-label">Email</div>
+                <div class="footer-contact-text">caseflowuk@outlook.com<br>Response within 24 hours</div>
+              </div>
+            </div>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div class="footer-contact-label">Location</div>
+                <div class="footer-contact-text">Manchester, United Kingdom</div>
+              </div>
+            </div>
+            <div class="footer-contact-item">
+              <div class="footer-contact-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              </div>
+              <div>
+                <div class="footer-contact-label">Plans from</div>
+                <div class="footer-contact-text">£59/month · Starter Plan<br>No setup fees</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+          <div class="footer-bottom-left">
+            <span class="footer-live-dot"></span>
+            © 2026 CASEFLOW LTD · CONFIDENTIAL · UK INNOVATOR FOUNDER VISA · NEELAM KUMARI
+          </div>
+          <div class="footer-bottom-links">
+            <a onclick="showPage('solution',null)">Solution</a>
+            <a onclick="showPage('financials',null)">Financials</a>
+            <a onclick="showPage('team',null)">Founder</a>
+            <a onclick="showPage('contact',null)">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- AI CHAT -->
+<button class="ai-chat-btn" onclick="toggleChat()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+</button>
+<div class="ai-chat-panel" id="chatPanel">
+  <div class="ai-chat-header">
+    <div class="live-dot"></div>
+    <h4>CaseFlow Assistant</h4>
+    <button class="ai-chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="ai-chat-msgs" id="chatMsgs">
+    <div class="chat-msg bot">Hello! I'm the CaseFlow assistant. Ask me anything about our dispute resolution platform  pricing, founder background, how we work, or our market opportunity.</div>
+  </div>
+  <div class="ai-chat-quick">
+    <button class="quick-btn" onclick="quickAsk('What does CaseFlow do?')">What is CaseFlow?</button>
+    <button class="quick-btn" onclick="quickAsk('What is the pricing?')">Pricing</button>
+    <button class="quick-btn" onclick="quickAsk('Who is the founder?')">Founder</button>
+    <button class="quick-btn" onclick="quickAsk('What makes you different?')">Differentiators</button>
+    <button class="quick-btn" onclick="quickAsk('What is the revenue forecast?')">Revenue</button>
+    <button class="quick-btn" onclick="quickAsk('What is the market opportunity?')">Market Size</button>
+    <button class="quick-btn" onclick="quickAsk('How does the evidence system work?')">How It Works</button>
+    <button class="quick-btn" onclick="quickAsk('What is the MVP roadmap?')">Roadmap</button>
+    <button class="quick-btn" onclick="quickAsk('Who are your competitors?')">Competitors</button>
+    <button class="quick-btn" onclick="quickAsk('What is the LTV and CAC?')">Unit Economics</button>
+  </div>
+  <div class="ai-chat-input">
+    <input type="text" id="chatInput" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="ai-chat-send" onclick="sendChat()">Send</button>
+  </div>
+</div>
+
+<div id="toastStack"></div>
+
+<script>
+// ══════ PAGE ROUTING ══════
+const pageLabels = {
+  home:'Platform Overview', problem:'The Problem', solution:'The Solution',
+  market:'Market Analysis', competition:'Competitive Landscape',
+  product:'Product Roadmap', financials:'Financial Plan',
+  team:'Team & Founder', risk:'Risk Mitigation', demo:'Live Demo', contact:'Contact Us'
+};
+
+function showPage(id, navBtn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if(navBtn) navBtn.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+    });
+  }
+  document.getElementById('topbarTitle').textContent = pageLabels[id] || 'CaseFlow';
+  document.querySelector('.main').scrollTop = 0;
+  window.scrollTo(0,0);
+  initPageCharts(id);
+  // Update mobile nav active state
+  document.querySelectorAll('.mob-nav-item').forEach(n => n.classList.remove('active'));
+  const mobItem = document.getElementById('mobnav-'+id);
+  if(mobItem) mobItem.classList.add('active');
+}
+
+// ══════ CHART INIT ══════
+const inited = {};
+function initPageCharts(page) {
+  if(inited[page]) return;
+  inited[page] = true;
+  const navy='#0D1B3E',blue='#2563EB',lightBlue='#BFDBFE',green='#059669',amber='#D97706',gray='#64748B';
+
+  if(page==='problem') {
+    new Chart(document.getElementById('causeChart'),{
+      type:'bar',
+      data:{
+        labels:['Admin Mistakes','Unclear Invoices','Technical Failures','Late Payer Chain','Intentional Delay'],
+        datasets:[{
+          label:'% of Overdue Payments',
+          data:[36,31,23,40,18],
+          backgroundColor:[navy+'cc',blue+'cc',lightBlue,amber+'cc',gray+'88'],
+          borderRadius:6
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:gray,font:{size:10}}},y:{ticks:{color:gray,callback:v=>v+'%'}}}}
+    });
+    new Chart(document.getElementById('wtpChart'),{
+      type:'bar',
+      data:{
+        labels:['£50–99/mo','£100–199/mo','£200–399/mo','£400+/mo'],
+        datasets:[{
+          label:'% of SMEs willing to pay',
+          data:[34,29,21,16],
+          backgroundColor:[blue,blue+'cc',lightBlue,gray+'55'],
+          borderRadius:6
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:gray,font:{size:10}}},y:{ticks:{color:gray,callback:v=>v+'%'}}}}
+    });
+  }
+
+  if(page==='market') {
+    new Chart(document.getElementById('sectorChart'),{
+      type:'bar',
+      data:{
+        labels:['Insurance','Professional Svcs','Wholesale','Construction','Manufacturing','Retail','Tech'],
+        datasets:[{
+          label:'Late Payment Rate (%)',
+          data:[21,18,16,15,13,12,11],
+          backgroundColor:[navy,blue,lightBlue,amber+'cc',gray+'88',lightBlue+'aa',navy+'88'],
+          borderRadius:6
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:gray,font:{size:10}}},y:{ticks:{color:gray,callback:v=>v+'%'}}}}
+    });
+    new Chart(document.getElementById('marketSizeChart'),{
+      type:'doughnut',
+      data:{
+        labels:['CaseFlow Y3 Target (<0.01%)','Remaining UK SMEs'],
+        datasets:[{data:[450,5449550],backgroundColor:[blue,lightBlue],borderWidth:0}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:navy,font:{size:11}}}},cutout:'65%'}
+    });
+  }
+
+  if(page==='competition') {
+    new Chart(document.getElementById('pricingChart'),{
+      type:'bar',
+      data:{
+        labels:['Accounting Software','CaseFlow Starter','Credit Control','CaseFlow Growth','CaseFlow Pro','Enterprise AR'],
+        datasets:[{
+          label:'Monthly Cost (£)',
+          data:[25,59,125,149,299,5000],
+          backgroundColor:[gray+'55',blue,amber+'cc',blue+'cc',navy,gray+'33'],
+          borderRadius:6
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:gray,font:{size:9}}},y:{ticks:{color:gray,callback:v=>'£'+v}}}}
+    });
+  }
+
+  if(page==='financials') {
+    new Chart(document.getElementById('revChart'),{
+      type:'bar',
+      data:{
+        labels:['Year 1','Year 2','Year 3'],
+        datasets:[
+          {label:'Revenue (£)',data:[76035,371924,774411],backgroundColor:blue+'cc',borderRadius:6},
+          {label:'Gross Profit (£)',data:[63109,312416,656313],backgroundColor:lightBlue,borderRadius:6},
+          {label:'Net Profit (£)',data:[4081,46028,104054],backgroundColor:green+'88',borderRadius:6}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:navy,font:{size:10}}}},scales:{x:{ticks:{color:gray}},y:{ticks:{color:gray,callback:v=>'£'+v.toLocaleString()}}}}
+    });
+    new Chart(document.getElementById('custChart'),{
+      type:'line',
+      data:{
+        labels:['M6','M7','M8','M9','M10','M11','M12','Y2 Q1','Y2 Q2','Y2 Q3','Y2 Q4','Y3'],
+        datasets:[{
+          label:'Active Customers',
+          data:[10,25,40,80,120,130,150,180,220,290,350,450],
+          borderColor:blue,backgroundColor:lightBlue+'55',fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:blue
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:gray,font:{size:9}}},y:{ticks:{color:gray}}}}
+    });
+  }
+}
+
+// ══════ DEMO ══════
+const demoData = {
+  price: {bars:[95,60,88,75],insight:'Price mismatch disputes require strong documentation of original PO terms and any subsequent variation orders. Key gap: written approval of price changes. CaseFlow flags unsigned variation orders as a critical gap.',score:79},
+  delivery: {bars:[88,92,70,80],insight:'Delivery disputes typically resolve quickly when dispatch records and signed delivery confirmations are present. Recommend adding GPS-verified proof of delivery for recurring customers.',score:85},
+  quality: {bars:[82,55,90,65],insight:'Quality claims require service acceptance sign-off. Without a formal acceptance protocol, evidence sufficiency is limited. CaseFlow recommends adding a milestone billing acceptance workflow.',score:58},
+  po: {bars:[70,60,45,72],insight:'Missing PO disputes indicate upstream process failures. CaseFlow identifies this as a prevention opportunity: require PO confirmation before invoicing. Resolution is complex without documented authorisation.',score:52},
+  acceptance: {bars:[65,50,88,78],insight:'Acceptance disputes are the most complex to resolve without a formal sign-off protocol. CaseFlow will generate a prevention control requiring explicit written acceptance at each project milestone.',score:68}
+};
+
+function runDisputeDemo() {
+  const type = document.getElementById('disputeType').value;
+  const d = demoData[type] || demoData.price;
+  const score = d.score + Math.floor(Math.random()*8 - 4);
+  const el = document.getElementById('demoOutput');
+  el.style.display = 'block';
+  document.getElementById('demoScore').textContent = score + '%';
+  const status = document.getElementById('demoStatus');
+  if(score >= 75) {status.textContent='STRONG EVIDENCE';status.style.background='#D1FAE5';status.style.color='#065F46';}
+  else if(score >= 55) {status.textContent='MODERATE EVIDENCE';status.style.background='#FEF3C7';status.style.color='#92400E';}
+  else {status.textContent='WEAK EVIDENCE';status.style.background='#FEE2E2';status.style.color='#991B1B';}
+  ['bar1','bar2','bar3','bar4'].forEach((id,i) => {
+    setTimeout(()=>{
+      const v = d.bars[i] + Math.floor(Math.random()*10-5);
+      document.getElementById(id).style.width = v+'%';
+      document.getElementById('bv'+(i+1)).textContent = v+'%';
+    }, i*150);
+  });
+  document.getElementById('demoInsight').textContent = d.insight;
+  showToast('Evidence report generated successfully');
+}
+
+// ══════ CHAT ══════
+const chatKB = {
+  'caseflow':'CaseFlow is a B2B SaaS platform that helps UK SMEs resolve invoice disputes by transforming fragmented records into structured, audit-ready evidence packs. Our Claim-Level Provenance Spine creates machine-readable links between claims, events and documents.',
+  'what':'CaseFlow is a B2B SaaS dispute resolution platform for UK SMEs. We structure evidence, build chronological timelines, and generate audit-ready resolution packages  cutting the average £22,000 annual loss from invoice disputes.',
+  'pricing':'CaseFlow offers three plans: Starter at £59/month (micro SMEs), Growth at £149/month (most popular), and Professional at £299/month (high-dispute businesses). All include our core dispute resolution workflow. No setup fees required.',
+  'founder':'CaseFlow is founded by Neelam Kumari, who holds an MSc in Finance from Manchester Metropolitan University. She brings experience in compliance management, documentation control, and structured case processing from the UK higher education sector.',
+  'different':'CaseFlow is the only SME platform that models disputes as evidence problems  not communication problems. Our Claim-Level Provenance Spine links every claim to specific events and documents, producing audit-ready resolution packages. No competitor offers this structured approach at SME pricing.',
+  'revenue':'CaseFlow projects £76k revenue in Year 1 (5.37% margin), £372k in Year 2 (12.38% margin), and £774k in Year 3 (13.44% margin). All funded from a £50,000 founder investment with no external funding needed.',
+  'market':'The UK has 5.45 million SMEs, with over 1.5 million affected by late or disputed payments annually. Late payments cost the UK economy £11 billion per year and cause 14,000 business closures annually  38 businesses every single day.',
+  'how':'CaseFlow works in 5 steps: (1) Ingest evidence  upload invoices, POs, emails, delivery notes. (2) Classify the dispute under our root-cause taxonomy. (3) Build an evidence graph linking claims to documents. (4) Generate a chronological timeline. (5) Export a structured resolution package ready for negotiation.',
+  'roadmap':'CaseFlow\'s MVP launches at Month 5 with core dispute workflow. Phase 2 (Months 5-6) runs SME pilot. Phase 3 (Months 7-10) refines the product for commercial launch. Phase 4 (Months 11-18) adds integrations and automation. Phase 5 (Months 18-36) targets ecosystem and international expansion.',
+  'competitor':'CaseFlow sits in a gap between accounting software (Xero, QuickBooks) which track invoices but don\'t resolve disputes, and credit control tools (Chaser) which chase payments but don\'t structure evidence. Enterprise AR systems like HighRadius are too complex and costly for SMEs. CaseFlow is purpose-built for SME dispute resolution.',
+  'ltv':'CaseFlow\'s unit economics are strong: Year 1 ARPU is £1,740/year with a CAC of just £100  meaning payback in under 1 month. Estimated LTV is £6,400–£8,000 over a 4–5 year customer lifetime. Gross margin reaches 84.7% by Year 3.',
+};
+
+function quickAsk(q) {
+  addMsg(q,'user');
+  setTimeout(()=>{
+    const key = Object.keys(chatKB).find(k => q.toLowerCase().includes(k));
+    addMsg(key ? chatKB[key] : 'Great question! CaseFlow helps UK SMEs resolve invoice disputes through structured evidence workflows. Visit our Demo page or use the navigation to explore our platform in detail.','bot');
+  }, 600);
+}
+
+function sendChat() {
+  const inp = document.getElementById('chatInput');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value = '';
+  quickAsk(msg);
+}
+
+function addMsg(text, role) {
+  const div = document.createElement('div');
+  div.className = 'chat-msg '+role;
+  div.textContent = text;
+  const msgs = document.getElementById('chatMsgs');
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function toggleChat() {
+  document.getElementById('chatPanel').classList.toggle('open');
+}
+
+// ══════ CONTACT ══════
+function submitContact() {
+  const name = document.getElementById('fName').value;
+  const email = document.getElementById('fEmail').value;
+  if(!name || !email) { showToast('Please fill in your name and email.'); return; }
+  showToast('Message sent! Neelam will reply within 24 hours.');
+  ['fName','lName','fEmail','fCompany','fMsg'].forEach(id => {const e=document.getElementById(id);if(e)e.value='';});
+}
+
+// ══════ TOAST ══════
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.getElementById('toastStack').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ══════ MOBILE DRAWER ══════
+function toggleMobDrawer() {
+  const drawer = document.getElementById('mobDrawer');
+  const btn = document.getElementById('hamburgerBtn');
+  drawer.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeMobDrawer() {
+  document.getElementById('mobDrawer').classList.remove('open');
+  document.getElementById('hamburgerBtn').classList.remove('open');
+}
+
+// ══════ INIT ══════
+window.addEventListener('load', () => {
+  initPageCharts('home');
+  setTimeout(() => showToast('CaseFlow Platform · UK Innovator Founder Visa 2026'), 1000);
+});
+</script>
+</body>
+</html>
