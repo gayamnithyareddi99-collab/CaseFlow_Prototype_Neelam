@@ -747,7 +747,7 @@ textarea.form-control{resize:vertical;min-height:110px}
   <div class="topbar">
     <div class="topbar-title" id="topbarTitle">Platform Overview</div>
     <div class="topbar-right">
-      <div class="topbar-chip">UK Innovator Founder Visa 2026</div>
+      <div class="topbar-chip">UK Invoice Dispute Resolution</div>
       <button class="topbar-btn" onclick="showPage('contact',null)">Get Started</button>
     </div>
   </div>
@@ -761,13 +761,46 @@ textarea.form-control{resize:vertical;min-height:110px}
         <div>
           <div class="hero-eyebrow">
             <svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5" fill="#34D399"/></svg>
-            B2B SaaS · Invoice Dispute Resolution
+            B2B SaaS · Invoice Dispute Resolution · UK SMEs
           </div>
-          <h1>Turn <em>Messy Disputes</em> Into Clear Outcomes</h1>
-          <p class="hero-sub">CaseFlow is a structured, evidence-based operating platform that helps UK SMEs file, resolve, and prevent recurring B2B invoice disputes  cutting the average £22,000 annual loss.</p>
+          <h1>Resolve Business Disputes <em>Before They Escalate</em></h1>
+          <p class="hero-sub">CaseFlow organises your fragmented invoices, emails, and contracts into structured, audit-ready evidence packs  so you can resolve disputes faster and professionally. <span style="display:inline-block;margin-top:8px;font-size:.9rem;color:rgba(255,255,255,.45);font-family:var(--font-mono);letter-spacing:.04em">Not legal advice · An operational evidence tool for SMEs</span></p>
+
+          <!-- WHO IT'S FOR -->
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px 13px;font-size:.75rem;color:rgba(255,255,255,.75)">
+              <span style="color:#34D399;font-size:.85rem">✓</span> SMEs with payment disputes
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px 13px;font-size:.75rem;color:rgba(255,255,255,.75)">
+              <span style="color:#34D399;font-size:.85rem">✓</span> Supplier & contract conflicts
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px 13px;font-size:.75rem;color:rgba(255,255,255,.75)">
+              <span style="color:#34D399;font-size:.85rem">✓</span> Finance teams & accountants
+            </div>
+          </div>
+
+          <!-- HOW IT WORKS 3-STEP -->
+          <div style="display:flex;gap:0;margin-bottom:28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden">
+            <div style="flex:1;padding:14px 16px;border-right:1px solid rgba(255,255,255,.08);text-align:center">
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px">Step 1</div>
+              <div style="font-size:.82rem;font-weight:600;color:#fff">Log</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Upload your docs</div>
+            </div>
+            <div style="flex:1;padding:14px 16px;border-right:1px solid rgba(255,255,255,.08);text-align:center">
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px">Step 2</div>
+              <div style="font-size:.82rem;font-weight:600;color:#fff">Organise</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Build the timeline</div>
+            </div>
+            <div style="flex:1;padding:14px 16px;text-align:center">
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px">Step 3</div>
+              <div style="font-size:.82rem;font-weight:600;color:#fff">Summarise</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Export resolution pack</div>
+            </div>
+          </div>
+
           <div class="hero-btns">
-            <button class="btn-primary" onclick="showPage('demo',null)">See Live Demo</button>
-            <button class="btn-outline" onclick="showPage('solution',null)">How It Works</button>
+            <button class="btn-primary" onclick="showPage('demo',null)">Try Live Demo</button>
+            <button class="btn-outline" onclick="showPage('contact',null)">Get Started Free</button>
           </div>
         </div>
         <div class="hero-visual">
@@ -1702,22 +1735,50 @@ textarea.form-control{resize:vertical;min-height:110px}
             <option value="construction">Construction</option>
             <option value="tech">Technology / SaaS</option>
           </select>
-          <button class="demo-run-btn" onclick="runDisputeDemo()">Generate Evidence Report</button>
+          <button class="demo-run-btn" onclick="runDisputeDemo()">⚡ Generate Evidence Report</button>
           <div class="demo-output" id="demoOutput">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <!-- SCORE + STATUS ROW -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
               <div>
-                <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.1em">EVIDENCE SUFFICIENCY SCORE</div>
+                <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:2px">DISPUTE HEALTH SCORE</div>
                 <div class="demo-score" id="demoScore">0</div>
               </div>
               <div id="demoStatus" style="padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:700;font-family:var(--font-mono)"></div>
             </div>
-            <div class="demo-bars">
+
+            <!-- CATEGORISATION TAGS -->
+            <div style="margin-bottom:14px">
+              <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:7px">AUTO-CATEGORISATION TAGS</div>
+              <div id="demoTags" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+            </div>
+
+            <!-- EVIDENCE BARS -->
+            <div class="demo-bars" style="margin-bottom:14px">
               <div class="demo-bar-row"><span class="demo-bar-label">Invoice Docs</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar1"></div></div><span class="demo-bar-val" id="bv1">0%</span></div>
               <div class="demo-bar-row"><span class="demo-bar-label">Delivery Proof</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar2"></div></div><span class="demo-bar-val" id="bv2">0%</span></div>
               <div class="demo-bar-row"><span class="demo-bar-label">Contract Terms</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar3"></div></div><span class="demo-bar-val" id="bv3">0%</span></div>
               <div class="demo-bar-row"><span class="demo-bar-label">Comms Record</span><div class="demo-bar-track"><div class="demo-bar-fill" id="bar4"></div></div><span class="demo-bar-val" id="bv4">0%</span></div>
             </div>
-            <div class="demo-insight" id="demoInsight"></div>
+
+            <!-- EVIDENCE TIMELINE -->
+            <div style="margin-bottom:14px">
+              <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:8px">EVIDENCE TIMELINE</div>
+              <div id="demoTimeline" style="display:flex;flex-direction:column;gap:0;position:relative;padding-left:20px"></div>
+            </div>
+
+            <!-- PLAIN-ENGLISH SUMMARY -->
+            <div style="background:var(--sky);border-left:3px solid var(--blue-bright);border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:10px">
+              <div style="font-family:var(--font-mono);font-size:.57rem;color:var(--blue);letter-spacing:.1em;margin-bottom:5px">PLAIN-ENGLISH SUMMARY</div>
+              <div id="demoSummary" style="font-size:.84rem;color:var(--text-body);line-height:1.65"></div>
+            </div>
+
+            <!-- PREVENTION INSIGHT -->
+            <div id="demoPrevent" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:11px 13px">
+              <div style="font-family:var(--font-mono);font-size:.57rem;color:#065F46;letter-spacing:.1em;margin-bottom:4px">💡 PREVENTION INSIGHT</div>
+              <div id="demoPreventText" style="font-size:.82rem;color:#065F46;line-height:1.6"></div>
+            </div>
+
+            <div style="margin-top:10px;font-size:.72rem;color:var(--text-muted);font-style:italic">This output is a structured factual summary only and does not constitute legal advice.</div>
           </div>
         </div>
 
@@ -1943,7 +2004,7 @@ form.addEventListener("submit", function(e) {
             <div class="footer-badges">
               <span class="footer-badge">B2B SaaS</span>
               <span class="footer-badge">UK SME Focus</span>
-              <span class="footer-badge">Innovator Founder Visa 2026</span>
+              <span class="footer-badge">Invoice Dispute Resolution</span>
               <span class="footer-badge">Manchester, UK</span>
             </div>
           </div>
@@ -2006,7 +2067,7 @@ form.addEventListener("submit", function(e) {
         <div class="footer-bottom">
           <div class="footer-bottom-left">
             <span class="footer-live-dot"></span>
-            © 2026 CASEFLOW LTD · CONFIDENTIAL · UK INNOVATOR FOUNDER VISA · NEELAM KUMARI
+            © 2026 CASEFLOW LTD · CONFIDENTIAL · INVOICE DISPUT RESOLUTION· NEELAM KUMARI
           </div>
           <div class="footer-bottom-links">
             <a onclick="showPage('solution',null)">Solution</a>
@@ -2189,12 +2250,101 @@ function initPageCharts(page) {
 
 // ══════ DEMO ══════
 const demoData = {
-  price: {bars:[95,60,88,75],insight:'Price mismatch disputes require strong documentation of original PO terms and any subsequent variation orders. Key gap: written approval of price changes. CaseFlow flags unsigned variation orders as a critical gap.',score:79},
-  delivery: {bars:[88,92,70,80],insight:'Delivery disputes typically resolve quickly when dispatch records and signed delivery confirmations are present. Recommend adding GPS-verified proof of delivery for recurring customers.',score:85},
-  quality: {bars:[82,55,90,65],insight:'Quality claims require service acceptance sign-off. Without a formal acceptance protocol, evidence sufficiency is limited. CaseFlow recommends adding a milestone billing acceptance workflow.',score:58},
-  po: {bars:[70,60,45,72],insight:'Missing PO disputes indicate upstream process failures. CaseFlow identifies this as a prevention opportunity: require PO confirmation before invoicing. Resolution is complex without documented authorisation.',score:52},
-  acceptance: {bars:[65,50,88,78],insight:'Acceptance disputes are the most complex to resolve without a formal sign-off protocol. CaseFlow will generate a prevention control requiring explicit written acceptance at each project milestone.',score:68}
+  price: {
+    bars:[95,60,88,75],
+    score:79,
+    tags:['Price Mismatch','Variation Order','Documentation Gap','Commercial Dispute'],
+    tagColors:['pill-blue','pill-amber','pill-amber','pill-green'],
+    timeline:[
+      {date:'12 Jan 2024', event:'Contract signed – agreed unit price £12,800', ok:true},
+      {date:'08 Mar 2024', event:'Work completed – verbal price change discussed', ok:false},
+      {date:'15 Mar 2024', event:'Invoice issued for £14,200 (undocumented uplift)', ok:false},
+      {date:'22 Mar 2024', event:'Customer disputes £1,400 variance in writing', ok:true},
+      {date:'28 Mar 2024', event:'CaseFlow case opened – evidence ingestion begins', ok:true}
+    ],
+    summary:'Your customer disputes a £1,400 difference between the agreed PO value (£12,800) and the invoiced amount (£14,200). The core issue is that a price change was discussed verbally but never formally documented. Your evidence is strong on the original contract but weak on the variation approval. CaseFlow recommends requesting a written variation order before escalating.',
+    prevent:'Require written price-change approval before issuing any invoice above the original PO value. Add a variation order step to your billing workflow to prevent recurrence.'
+  },
+  delivery: {
+    bars:[88,92,70,80],
+    score:85,
+    tags:['Delivery Dispute','Proof of Delivery','Logistics Issue','Near Resolved'],
+    tagColors:['pill-blue','pill-green','pill-amber','pill-green'],
+    timeline:[
+      {date:'03 Feb 2024', event:'Order placed with delivery date confirmed', ok:true},
+      {date:'14 Feb 2024', event:'Goods dispatched – tracked shipment initiated', ok:true},
+      {date:'17 Feb 2024', event:'Customer claims goods not received', ok:false},
+      {date:'20 Feb 2024', event:'Carrier confirms delivery to site – GPS log attached', ok:true},
+      {date:'25 Feb 2024', event:'CaseFlow generates delivery evidence pack', ok:true}
+    ],
+    summary:'Your customer claims the goods were not received, but your dispatch records and the carrier\'s GPS-verified delivery log both confirm delivery to the site address. This dispute has strong evidence and is likely to resolve quickly. The missing element is a signed delivery receipt  CaseFlow flags this as a preventable gap.',
+    prevent:'Introduce a signed delivery receipt or photo confirmation step for all deliveries. GPS carrier logs alone may not be sufficient for all customers  a recipient signature is the gold standard.'
+  },
+  quality: {
+    bars:[82,55,90,65],
+    score:58,
+    tags:['Quality Claim','Service Acceptance','Milestone Billing','Evidence Gap'],
+    tagColors:['pill-amber','pill-amber','pill-blue','pill-amber'],
+    timeline:[
+      {date:'05 Jan 2024', event:'Service delivery begins under signed contract', ok:true},
+      {date:'20 Feb 2024', event:'Milestone completed – no formal sign-off obtained', ok:false},
+      {date:'01 Mar 2024', event:'Invoice issued for milestone payment', ok:true},
+      {date:'10 Mar 2024', event:'Customer raises quality claim, rejects invoice', ok:false},
+      {date:'18 Mar 2024', event:'CaseFlow case opened – evidence gaps identified', ok:true}
+    ],
+    summary:'Your customer is rejecting the invoice based on a quality claim, but there is no formal service acceptance record to show they approved the milestone. This significantly weakens your position. CaseFlow recommends gathering any informal communications (emails, messages) where the customer acknowledged satisfactory delivery, and adding a formal acceptance step going forward.',
+    prevent:'Introduce a milestone acceptance sign-off step at each billing point. A simple email confirmation from the client acknowledging satisfactory completion is enough to protect your invoice.'
+  },
+  po: {
+    bars:[70,60,45,72],
+    score:52,
+    tags:['Missing PO','Authorisation Gap','Process Failure','High Risk'],
+    tagColors:['pill-amber','pill-amber','pill-amber','pill-amber'],
+    timeline:[
+      {date:'10 Nov 2023', event:'Work requested verbally – no PO issued', ok:false},
+      {date:'30 Nov 2023', event:'Work completed and invoiced', ok:true},
+      {date:'15 Dec 2023', event:'Customer disputes – claims no authorised purchase', ok:false},
+      {date:'20 Dec 2023', event:'No written authorisation trail found', ok:false},
+      {date:'05 Jan 2024', event:'CaseFlow flags upstream authorisation failure', ok:true}
+    ],
+    summary:'This dispute is high-risk because there is no written purchase order or authorisation for the work performed. The customer is likely to argue they never formally approved the engagement. CaseFlow has found some supporting evidence (emails referencing the work) but the absence of a signed PO makes this difficult to resolve without negotiation.',
+    prevent:'Never begin work without a written purchase order or at minimum a written email authorisation. Add a PO-confirmation gate to your sales and operations process before work begins.'
+  },
+  acceptance: {
+    bars:[65,50,88,78],
+    score:68,
+    tags:['Acceptance Dispute','Milestone Billing','Contractual','Moderate Risk'],
+    tagColors:['pill-blue','pill-blue','pill-green','pill-amber'],
+    timeline:[
+      {date:'01 Dec 2023', event:'Contract signed with milestone acceptance clauses', ok:true},
+      {date:'15 Jan 2024', event:'Milestone 1 delivered – no formal acceptance obtained', ok:false},
+      {date:'01 Feb 2024', event:'Milestone 1 invoice issued', ok:true},
+      {date:'10 Feb 2024', event:'Customer disputes – claims milestone not met', ok:false},
+      {date:'20 Feb 2024', event:'CaseFlow timeline built from contract and emails', ok:true}
+    ],
+    summary:'The contract contains acceptance clauses, but no formal sign-off was obtained at the milestone stage. CaseFlow\'s timeline shows the customer was informed of completion and did not raise objections at the time, which strengthens your position. However, explicit written acceptance would have made this straightforward.',
+    prevent:'Build acceptance sign-offs directly into your project workflow at each milestone. A simple acceptance form or email template, sent immediately on completion, prevents this class of dispute almost entirely.'
+  }
 };
+
+function buildTimeline(events) {
+  const el = document.getElementById('demoTimeline');
+  el.innerHTML = '';
+  events.forEach((ev, i) => {
+    const isLast = i === events.length - 1;
+    el.innerHTML += `<div style="position:relative;padding-bottom:${isLast?'0':'14px'};padding-left:12px;">
+      <div style="position:absolute;left:-9px;top:4px;width:14px;height:14px;border-radius:50%;background:${ev.ok?'var(--green)':'var(--amber)'};border:2px solid ${ev.ok?'#D1FAE5':'#FEF3C7'};flex-shrink:0"></div>
+      ${!isLast?'<div style="position:absolute;left:-3px;top:18px;bottom:0;width:2px;background:var(--gray-200)"></div>':''}
+      <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--text-muted);margin-bottom:1px">${ev.date}</div>
+      <div style="font-size:.8rem;color:${ev.ok?'var(--text-body)':'#92400E'};font-weight:${ev.ok?'400':'500'}">${ev.event}</div>
+    </div>`;
+  });
+}
+
+function buildTags(tags, colors) {
+  const el = document.getElementById('demoTags');
+  el.innerHTML = tags.map((t, i) => `<span class="pill ${colors[i]||'pill-blue'}" style="font-size:.72rem">${t}</span>`).join('');
+}
 
 function runDisputeDemo() {
   const type = document.getElementById('disputeType').value;
@@ -2214,8 +2364,11 @@ function runDisputeDemo() {
       document.getElementById('bv'+(i+1)).textContent = v+'%';
     }, i*150);
   });
-  document.getElementById('demoInsight').textContent = d.insight;
-  showToast('Evidence report generated successfully');
+  buildTags(d.tags, d.tagColors);
+  buildTimeline(d.timeline);
+  document.getElementById('demoSummary').textContent = d.summary;
+  document.getElementById('demoPreventText').textContent = d.prevent;
+  showToast('Evidence report generated  timeline and summary ready');
 }
 
 // ══════ CHAT ══════
@@ -2295,7 +2448,7 @@ function closeMobDrawer() {
 // ══════ INIT ══════
 window.addEventListener('load', () => {
   initPageCharts('home');
-  setTimeout(() => showToast('CaseFlow Platform · UK Innovator Founder Visa 2026'), 1000);
+  setTimeout(() => showToast('CaseFlow Platform · UK Invoice Dispute Resolution'), 1000);
 });
 </script>
 </body>
